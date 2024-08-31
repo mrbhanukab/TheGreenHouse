@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:thegreenhouse/Pages/login.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:thegreenhouse/Services/login_flow_control.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -10,15 +17,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    precacheImage(const AssetImage("assets/logo.png"), context);
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'The Green House',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
       ),
-      home: Scaffold(
-          body: Login(),
+      home: const Scaffold(
+          body: LoginFlowControl(),
       ),
     );
   }
