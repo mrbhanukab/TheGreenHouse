@@ -15,7 +15,7 @@ class LoginFlowControl extends StatelessWidget {
             if (snapshot.hasData) {
               final user = FirebaseAuth.instance.currentUser!;
               return Center(
-                child: Text("${user.displayName}"),
+                child: Text("Hi ${user.displayName}"),
               );
             } else {
               return const Login();

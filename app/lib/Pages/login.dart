@@ -6,6 +6,12 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get screen width and height
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Calculate text sizes based on screen dimensions
+    final descriptionFontSize = screenWidth * 0.07;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -30,7 +36,7 @@ class Login extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Logo and Title (Flex for responsiveness)
+                // Logo and Title
                 const Flexible(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -70,11 +76,10 @@ class Login extends StatelessWidget {
                   ),
                 ),
 
-                // Login Container (Flex for responsiveness)
+                // Login Container
                 Flexible(
                   child: Container(
-                    margin: const EdgeInsets.only(
-                        bottom: 10), // Add margin for spacing
+                    margin: const EdgeInsets.only(bottom: 10), // Add margin for spacing
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(25),
@@ -84,10 +89,10 @@ class Login extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        const Text(
+                        Text(
                           "Ready to cultivate the future? Unlock powerful tools to manage your state-of-the-art greenhouse by",
                           style: TextStyle(
-                            fontSize: 27,
+                            fontSize: descriptionFontSize,
                             fontWeight: FontWeight.w300,
                             color: Colors.white,
                           ),
@@ -95,8 +100,7 @@ class Login extends StatelessWidget {
                         // Google Sign-in Button
                         InkWell(
                           onTap: () => AuthService().signInWithGoogle(),
-                          borderRadius: BorderRadius.circular(
-                              15), // Optional: to match the container's border radius
+                          borderRadius: BorderRadius.circular(15), // Optional: to match the container's border radius
                           child: Container(
                             width: double.infinity,
                             height: 50,
