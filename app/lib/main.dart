@@ -25,9 +25,10 @@ class MyApp extends StatelessWidget {
       title: 'The Green House',
       theme: ThemeData(
         useMaterial3: true,
+        fontFamily: 'Comfortaa',
       ),
       home: const Scaffold(
-          body: LoginFlowControl(),
+          body: SafeArea(child: LoginFlowControl()),
       ),
     );
   }

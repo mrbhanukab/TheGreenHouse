@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thegreenhouse/Pages/login.dart';
 
+import '../Pages/havent_assign.dart';
+
 
 class LoginFlowControl extends StatelessWidget {
   const LoginFlowControl({super.key});
@@ -13,10 +15,7 @@ class LoginFlowControl extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              final user = FirebaseAuth.instance.currentUser!;
-              return Center(
-                child: Text("Hi ${user.displayName}"),
-              );
+              return const HaventAssign();
             } else {
               return const Login();
             }

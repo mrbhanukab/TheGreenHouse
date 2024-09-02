@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:thegreenhouse/Services/google_signin.dart';
 
@@ -6,12 +7,7 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen width and height
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    // Calculate text sizes based on screen dimensions
-    final descriptionFontSize = screenWidth * 0.07;
-
+    precacheImage(const AssetImage("assets/logo.png"), context);
     return Scaffold(
       body: Stack(
         children: [
@@ -22,8 +18,8 @@ class Login extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color.fromRGBO(255, 255, 255, 0.50),
-                  Color.fromRGBO(76, 143, 54, 0.50),
+                  Color.fromRGBO(255, 255, 255, 1),
+                  Color.fromRGBO(76, 143, 54, 0.60),
                 ],
                 stops: [-0.0123, 1.0202],
               ),
@@ -89,13 +85,14 @@ class Login extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Text(
+                        const AutoSizeText(
                           "Ready to cultivate the future? Unlock powerful tools to manage your state-of-the-art greenhouse by",
                           style: TextStyle(
-                            fontSize: descriptionFontSize,
+                            fontSize: 27,
                             fontWeight: FontWeight.w300,
                             color: Colors.white,
                           ),
+                          maxLines: 5,
                         ),
                         // Google Sign-in Button
                         InkWell(
@@ -113,7 +110,7 @@ class Login extends StatelessWidget {
                                 "Continue with Google",
                                 style: TextStyle(
                                   fontSize: 22,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
