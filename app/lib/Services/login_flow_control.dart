@@ -6,7 +6,8 @@ import '../Pages/havent_assign.dart';
 
 
 class LoginFlowControl extends StatelessWidget {
-  const LoginFlowControl({super.key});
+  final String version;
+  const LoginFlowControl({super.key, required this.version});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class LoginFlowControl extends StatelessWidget {
             if (snapshot.hasData) {
               return const HaventAssign();
             } else {
-              return const Login();
+              return Login(version: version,);
             }
           }),
     );

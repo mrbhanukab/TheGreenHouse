@@ -1,24 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:thegreenhouse/Services/login_flow_control.dart';
 
 import 'firebase_options.dart';
+
+late String version;
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  version = packageInfo.version;
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
-    runApp(const MyApp());
+    runApp( MyApp(version: version));
   });
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String version;
+  const MyApp({super.key, required this.version});
 
   @override
+
   Widget build(BuildContext context) {
     precacheImage(const AssetImage("assets/logo.png"), context);
     return MaterialApp(
@@ -27,8 +34,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Comfortaa',
       ),
-      home: const Scaffold(
-          body: SafeArea(child: LoginFlowControl()),
+      home: Scaffold(
+          body: SafeArea(child: LoginFlowControl(version: version,)),
       ),
     );
   }

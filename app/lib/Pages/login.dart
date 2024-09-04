@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:thegreenhouse/Services/google_signin.dart';
 
 class Login extends StatelessWidget {
-  const Login({super.key});
+  final String version;
+  const Login({super.key, required this.version});
 
   @override
   Widget build(BuildContext context) {
@@ -28,26 +29,26 @@ class Login extends StatelessWidget {
 
           // Content and Logo
           Padding(
-            padding: const EdgeInsets.only(top: 60, left: 10, right: 10),
+            padding: const EdgeInsets.only(top: 25, left: 10, right: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Logo and Title
-                const Flexible(
+                 Flexible(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsets.only(left: 10),
+                        padding: const EdgeInsets.only(left: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image(
+                            const Image(
                               image: AssetImage("assets/logo.png"),
                               width: 95,
                               height: 95,
                             ),
-                            Text(
+                            const Text(
                               "The Green\nHouse",
                               textAlign: TextAlign.left,
                               style: TextStyle(
@@ -58,8 +59,8 @@ class Login extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "Version 2.0.1",
-                              style: TextStyle(
+                              "Version $version",
+                              style: const TextStyle(
                                 letterSpacing: 0.5,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w300,
@@ -106,12 +107,13 @@ class Login extends StatelessWidget {
                               color: Colors.white,
                             ),
                             child: const Center(
-                              child: Text(
+                              child: AutoSizeText(
                                 "Continue with Google",
                                 style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.w600,
                                 ),
+                                maxLines: 1,
                               ),
                             ),
                           ),

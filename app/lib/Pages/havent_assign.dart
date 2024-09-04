@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 
 class HaventAssign extends StatelessWidget {
   const HaventAssign({super.key});
@@ -22,7 +22,7 @@ class HaventAssign extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Color.fromRGBO(255, 255, 255, 1),
+                      Color.fromRGBO(255, 255, 255, 0.8),
                       Color.fromRGBO(255, 101, 132, 0.6),
                     ],
                     stops: [-0.0123, 1.0202],
@@ -40,21 +40,22 @@ class HaventAssign extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SvgPicture.asset(
-                            'assets/haventAssigned.svg',
-                            width: constraints.maxWidth * 0.8,
+                          Lottie.asset(
+                            "assets/haventAssigned.json",
+                            width: constraints.maxWidth * 0.6,
                             height: null,
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          const Text(
-                            "We're pretty sure plants need someone to take care of them. They're just waiting for you!",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              height: 1.5,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: AutoSizeText(
+                              "We're pretty sure plants need someone to take care of them. They're just waiting for you!",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                height: 1.5,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              maxLines: 3,
                             ),
                           ),
                         ],
@@ -105,20 +106,25 @@ class HaventAssign extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
+                                        const AutoSizeText(
                                           "Copy User ID",
                                           style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600,
                                           ),
+                                          maxLines: 1,
                                         ),
-                                        Text(
-                                          user.uid,
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w300,
+                                        SizedBox(
+                                          width: constraints.maxWidth * 0.6, // Constrain the width
+                                          child: Text(
+                                            user.uid,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                            overflow: TextOverflow.ellipsis, // Set overflow property
                                           ),
-                                        )
+                                        ),
                                       ],
                                     ),
                                   ],
@@ -151,6 +157,7 @@ void _copyUID(BuildContext context, String uid) {
       shape: StadiumBorder(),
       behavior: SnackBarBehavior.floating,
       backgroundColor: Colors.white,
+      elevation: 5,
     ),
   );
 }
