@@ -31,6 +31,9 @@ flutter:
   assets:
     - assets/logo.png
     - assets/haventAssigned.json
+    - assets/AI-Hi.json
+    - assets/plant@good.json
+    - assets/plant@bad.json
   fonts:
     - family: Comfortaa
       fonts:
