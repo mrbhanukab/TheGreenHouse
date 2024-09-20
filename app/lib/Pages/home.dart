@@ -4,6 +4,7 @@ import 'package:thegreenhouse/Widgets/Atoms@Home/latest_alerts.dart';
 import 'package:thegreenhouse/Widgets/Atoms@Home/plants_list.dart';
 import '../Widgets/Atoms@Home/temperature_and_humidity.dart';
 import '../Widgets/custom_menu.dart';
+import '../Widgets/account_option.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -49,12 +50,7 @@ class HomeState extends State<Home> {
           appBarKey: _appBarKey,
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            onPressed: () {
-              // Add your onPressed code here!
-            },
-          ),
+          AccountOption(appBarKey: _appBarKey),
         ],
         title: const Text('Malabe GH 1'),
       ),

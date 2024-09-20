@@ -23,6 +23,7 @@ class TemperatureAndHumidity extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 50, fontWeight: FontWeight.w600),
                     ),
+
                   ],
                 ),
               ),

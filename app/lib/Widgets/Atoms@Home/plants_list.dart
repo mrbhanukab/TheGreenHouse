@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class PlantCard extends StatelessWidget {
   final bool needWater;
@@ -27,8 +27,13 @@ class PlantCard extends StatelessWidget {
                 color: needWater ? const Color(0xFFDFECDC) : const Color(0xFFF2DFDF),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Lottie.asset(needWater ? "assets/plant@good.json" : "assets/plant@bad.json"),
+              child: SvgPicture.asset(
+                needWater ? "assets/plant@good.svg" : "assets/plant@bad.svg",
+                width: MediaQuery.of(context).size.width * 0.35,
+                fit: BoxFit.fitWidth,
+              ),
             ),
+            const SizedBox(height: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -50,13 +55,50 @@ class PlantCard extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 5),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: IconButton(
+                      icon: const Icon(Icons.remove),
+                      onPressed: () {},
+                      color: Colors.black,
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(Colors.white.withOpacity(0.8)),
+                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        )),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Expanded(
+                    child: IconButton(
+                      icon: const Icon(Icons.add),
+                      onPressed: () {},
+                      color: Colors.black,
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(Colors.white.withOpacity(0.8)),
+                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        )),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-
 
 class PlantsList extends StatelessWidget {
   const PlantsList({super.key});
@@ -74,32 +116,36 @@ class PlantsList extends StatelessWidget {
       {'name': 'Pepper', 'humidity': 70},
     ];
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 15),
-      width: MediaQuery.of(context).size.width,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Plants",
-            style: TextStyle(
-              fontSize: 23,
-              fontWeight: FontWeight.w300,
-            ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 15),
+          width: constraints.maxWidth,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Plants",
+                style: TextStyle(
+                  fontSize: 23,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: plants.map((plant) {
+                    return PlantCard(
+                      needWater: plant['humidity'] > 50,
+                      plantData: plant,
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: plants.map((plant) {
-                return PlantCard(
-                  needWater: plant['humidity'] > 50,
-                  plantData: plant,
-                );
-              }).toList(),
-            ),
-          )
-        ],
-      ),
+        );
+      },
     );
   }
 }
