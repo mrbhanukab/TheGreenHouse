@@ -29,4 +29,25 @@ class FirestoreService {
       }).toList();
     });
   }
+
+  Future<void> updateForcedLight(String greenhouseId, bool forcedLight) async {
+    await _db.collection('greehouses').doc(greenhouseId).update({
+      'forced light': forcedLight,
+    });
+  }
+
+Future<void> updateEnvironmentLimits(String greenhouseId, int temperature, int humidity) async {
+  final docRef = _db.collection('greehouses').doc(greenhouseId);
+  await docRef.update({
+    'environment limits.temperature': temperature,
+    'environment limits.humidity': humidity,
+  });
+}
+
+  Future<void> updatePlantMoistureLimit(String greenhouseId, String plantName, int moistureLimit) async {
+    await _db.collection('greehouses').doc(greenhouseId).update({
+      'environment limits.moisture.$plantName': moistureLimit,
+    });
+  }
+
 }

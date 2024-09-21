@@ -46,39 +46,41 @@ class HomeState extends State<Home> {
         ],
         title: Text(selectedGreenhouseId.isEmpty ? 'Loading...' : selectedGreenhouseId),
       ),
-      body: selectedGreenhouseId.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              stream: _firestoreService.getGreenHouseInfoStream(selectedGreenhouseId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text('Error fetching data'));
-                } else if (!snapshot.hasData || snapshot.data!.data() == null) {
-                  return const Center(child: Text('No data available'));
-                }
+body: selectedGreenhouseId.isEmpty
+    ? const Center(child: CircularProgressIndicator())
+    : StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        stream: _firestoreService.getGreenHouseInfoStream(selectedGreenhouseId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('Error fetching data'));
+          } else if (!snapshot.hasData || snapshot.data!.data() == null) {
+            return const Center(child: Text('No data available'));
+          }
 
-                final data = snapshot.data!.data()!;
-                return SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      TemperatureAndHumidity(
-                        currentEnvironment: data['current environment'] ?? {},
-                        forcedLight: data['forced light'] ?? false,
-                        environmentLimits: data['environment limits'] ?? {},
-                      ),
-                      PlantsList(
-                        currentEnvironment: data['current environment'] ?? {},
-                        environmentLimits: data['environment limits'] ?? {},
-                      ),
-                      LatestAlerts(alertsStream: _firestoreService.getAlertsStream(selectedGreenhouseId)),
-                    ],
-                  ),
-                );
-              },
+          final data = snapshot.data!.data()!;
+          return SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                TemperatureAndHumidity(
+                  currentEnvironment: data['current environment'] ?? {},
+                  forcedLight: data['forced light'] ?? false,
+                  environmentLimits: data['environment limits'] ?? {},
+                  greenhouseId: selectedGreenhouseId,
+                ),
+                PlantsList(
+                  currentEnvironment: data['current environment'] ?? {},
+                  environmentLimits: data['environment limits'] ?? {},
+                  greenhouseId: selectedGreenhouseId,
+                ),
+                LatestAlerts(alertsStream: _firestoreService.getAlertsStream(selectedGreenhouseId)),
+              ],
             ),
+          );
+        },
+      ),
       floatingActionButton: const AIButton(),
     );
   }

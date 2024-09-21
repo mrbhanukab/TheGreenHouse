@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:async';
+
+import 'package:lottie/lottie.dart';
 
 class AlertCard extends StatelessWidget {
   final Map<String, dynamic> alertData;
@@ -43,10 +46,37 @@ class AlertCard extends StatelessWidget {
   }
 }
 
-class LatestAlerts extends StatelessWidget {
+class LatestAlerts extends StatefulWidget {
   final Stream<List<Map<String, dynamic>>> alertsStream;
 
   const LatestAlerts({super.key, required this.alertsStream});
+
+  @override
+  _LatestAlertsState createState() => _LatestAlertsState();
+}
+
+class _LatestAlertsState extends State<LatestAlerts> {
+  bool _isLoading = true;
+  List<Map<String, dynamic>> _alerts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _subscribeToAlerts();
+  }
+
+  void _subscribeToAlerts() {
+    widget.alertsStream.listen((alerts) async {
+      setState(() {
+        _isLoading = true;
+      });
+      await Future.delayed(const Duration(milliseconds: 500));
+      setState(() {
+        _alerts = alerts;
+        _isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,29 +93,29 @@ class LatestAlerts extends StatelessWidget {
               fontWeight: FontWeight.w300,
             ),
           ),
-          StreamBuilder<List<Map<String, dynamic>>>(
-            stream: alertsStream,
-            builder: (context, alertSnapshot) {
-              if (alertSnapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (alertSnapshot.hasError) {
-                return const Center(child: Text('Error fetching alerts'));
-              } else if (!alertSnapshot.hasData || alertSnapshot.data!.isEmpty) {
-                final now = DateFormat('🗓️ yyyy-MM-dd ⌚ HH:mm').format(DateTime.now());
-                return AlertCard(alertData: {'message': 'No alerts available!  😴', 'timestamp': now});
-              }
-
-              final alerts = alertSnapshot.data!;
-              return SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: alerts.map((alert) {
-                    return AlertCard(alertData: alert);
-                  }).toList(),
+          _isLoading
+              ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Lottie.asset(
+                              "assets/alerts_loading.json",
+                    width:  MediaQuery.of(context).size.width * 0.5
+                            ),
                 ),
-              );
-            },
-          ),
+              )
+              : _alerts.isEmpty
+                  ? AlertCard(alertData: {
+                      'message': 'No alerts available!  😴',
+                      'timestamp': DateFormat('🗓️ yyyy-MM-dd ⌚ HH:mm').format(DateTime.now())
+                    })
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        children: _alerts.map((alert) {
+                          return AlertCard(alertData: alert);
+                        }).toList(),
+                      ),
+                    ),
         ],
       ),
     );

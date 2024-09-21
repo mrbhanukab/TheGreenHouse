@@ -1,13 +1,24 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../Services/firestore.dart';
+
 class PlantCard extends StatelessWidget {
   final bool needWater;
   final Map<String, dynamic> plantData;
+  final VoidCallback onIncrease;
+  final VoidCallback onDecrease;
 
-  const PlantCard(
-      {super.key, required this.needWater, required this.plantData});
+  const PlantCard({
+    super.key,
+    required this.needWater,
+    required this.plantData,
+    required this.onIncrease,
+    required this.onDecrease,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +61,7 @@ class PlantCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "🚰 ${plantData['moisture']}% (${plantData['limit']==0 ? '--' : plantData['limit']}%)",
+                  "🚰 ${plantData['moisture']}% (${plantData['limit'] == 0 ? '--' : plantData['limit']}%)",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 12,
@@ -70,7 +81,7 @@ class PlantCard extends StatelessWidget {
                   Expanded(
                     child: IconButton(
                       icon: const Icon(Icons.remove),
-                      onPressed: () {},
+                      onPressed: onDecrease,
                       color: Colors.black,
                       style: ButtonStyle(
                         backgroundColor: WidgetStateProperty.all(
@@ -85,7 +96,7 @@ class PlantCard extends StatelessWidget {
                   Expanded(
                     child: IconButton(
                       icon: const Icon(Icons.add),
-                      onPressed: () {},
+                      onPressed: onIncrease,
                       color: Colors.black,
                       style: ButtonStyle(
                         backgroundColor: WidgetStateProperty.all(
@@ -106,20 +117,60 @@ class PlantCard extends StatelessWidget {
   }
 }
 
-class PlantsList extends StatelessWidget {
+class PlantsList extends StatefulWidget {
   final Map<String, dynamic> currentEnvironment;
   final Map<String, dynamic> environmentLimits;
+  final String greenhouseId;
 
   const PlantsList({
     super.key,
     required this.currentEnvironment,
     required this.environmentLimits,
+    required this.greenhouseId,
+
   });
 
   @override
+  _PlantsListState createState() => _PlantsListState();
+}
+
+class _PlantsListState extends State<PlantsList> {
+  final FirestoreService _firestoreService = FirestoreService();
+  final Map<String, int> _moistureLimits = {};
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeMoistureLimits();
+  }
+
+void _initializeMoistureLimits() {
+  widget.environmentLimits['moisture']?.forEach((plantName, limit) {
+    final currentMoisture = widget.currentEnvironment['moisture'][plantName] ?? 0;
+    _moistureLimits[plantName] = (limit == null || limit == 0) ? currentMoisture : limit;
+  });
+}
+
+void _updateMoistureLimit(String plantName, int change) {
+  setState(() {
+    _moistureLimits[plantName] = (_moistureLimits[plantName] ?? 0) + change;
+  });
+
+  if (_debounce?.isActive ?? false) _debounce!.cancel();
+  _debounce = Timer(const Duration(seconds: 1), () {
+    _firestoreService.updatePlantMoistureLimit(
+      widget.greenhouseId,
+      plantName,
+      _moistureLimits[plantName]!,
+    );
+  });
+}
+
+  @override
   Widget build(BuildContext context) {
-    final currentMoisture = currentEnvironment['moisture'];
-    final limitMoisture = environmentLimits['moisture'];
+    final currentMoisture = widget.currentEnvironment['moisture'];
+    final limitMoisture = widget.environmentLimits['moisture'];
 
     if (currentMoisture is! Map<String, dynamic> || limitMoisture is! Map<String, dynamic>) {
       return const Center(
@@ -130,7 +181,7 @@ class PlantsList extends StatelessWidget {
             height: 1.5,
             fontSize: 15,
             fontWeight: FontWeight.w600,
-              color: Colors.red
+            color: Colors.red,
           ),
           maxLines: 3,
         ),
@@ -141,11 +192,10 @@ class PlantsList extends StatelessWidget {
       return {
         'name': plantName,
         'moisture': currentMoisture[plantName] ?? 0,
-        'limit': limitMoisture[plantName] ?? 0,
+        'limit': _moistureLimits[plantName] ?? 0,
       };
     }).toList();
 
-    // Sort alphabetically by name first, then by moisture level
     plants.sort((a, b) {
       int nameComparison = a['name'].compareTo(b['name']);
       if (nameComparison != 0) {
@@ -185,6 +235,8 @@ class PlantsList extends StatelessWidget {
                     return PlantCard(
                       needWater: plant['moisture'] >= plant['limit'],
                       plantData: plant,
+                      onIncrease: () => _updateMoistureLimit(plant['name'], 1),
+                      onDecrease: () => _updateMoistureLimit(plant['name'], -1),
                     );
                   }).toList(),
                 ),

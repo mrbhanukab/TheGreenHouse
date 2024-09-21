@@ -13,10 +13,10 @@ class CustomMenu extends StatefulWidget {
   });
 
   @override
-  _CustomMenuState createState() => _CustomMenuState();
+  CustomMenuState createState() => CustomMenuState();
 }
 
-class _CustomMenuState extends State<CustomMenu> {
+class CustomMenuState extends State<CustomMenu> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
