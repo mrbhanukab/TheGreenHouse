@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class TemperatureHumidityInputDialog {
+  final bool forcedLight;
+  TemperatureHumidityInputDialog({
+    required this.forcedLight,
+  });
   int temperature = 22;
   int humidity = 75;
 
@@ -69,6 +73,7 @@ class TemperatureHumidityInputDialog {
               child: const Text('Update', style: TextStyle(color: Colors.white)),
             ),
           ],
+          backgroundColor: Colors.white,
         );
       },
     );
@@ -99,7 +104,16 @@ class TemperatureHumidityInputDialog {
           Expanded(
             child: TextButton(
               onPressed: () {},
-              style: buttonStyle,
+              style: ButtonStyle(
+                foregroundColor: WidgetStateProperty.all(forcedLight ? Colors.white : Colors.black),
+                backgroundColor: WidgetStateProperty.all(forcedLight ? Colors.black : Colors.transparent),
+                shape: WidgetStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    side: const BorderSide(color: Colors.black),
+                  ),
+                ),
+              ),
               child: const Text("Forced Light ON"),
             ),
           ),
@@ -110,11 +124,23 @@ class TemperatureHumidityInputDialog {
 }
 
 class TemperatureAndHumidity extends StatelessWidget {
-  const TemperatureAndHumidity({super.key});
+  final Map<String, dynamic> currentEnvironment;
+  final bool forcedLight;
+  final Map<String, dynamic> environmentLimits;
+
+  const TemperatureAndHumidity({
+    super.key,
+    required this.currentEnvironment,
+    required this.forcedLight,
+    required this.environmentLimits,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final dialog = TemperatureHumidityInputDialog();
+    final currentTemperature = currentEnvironment['temperature'] ?? "--";
+    final currentHumidity = currentEnvironment['humidity'] ?? "--";
+    final limitTemperature = environmentLimits['temperature'] ?? 0;
+    final limitHumidity = environmentLimits['humidity'] ?? 0;
 
     return SizedBox(
       width: MediaQuery.of(context).size.width,
@@ -123,7 +149,7 @@ class TemperatureAndHumidity extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Row(
+          Row(
             children: [
               Expanded(
                 child: Center(
@@ -131,10 +157,10 @@ class TemperatureAndHumidity extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Temperature"),
+                      const Text("Temperature"),
                       Text(
-                        "22°C",
-                        style: TextStyle(fontSize: 50, fontWeight: FontWeight.w600),
+                        "$currentTemperature°C",
+                        style: const TextStyle(fontSize: 50, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
@@ -146,10 +172,10 @@ class TemperatureAndHumidity extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Humidity"),
+                      const Text("Humidity"),
                       Text(
-                        "75%",
-                        style: TextStyle(fontSize: 50, fontWeight: FontWeight.w600),
+                        "$currentHumidity%",
+                        style: const TextStyle(fontSize: 50, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
@@ -157,7 +183,7 @@ class TemperatureAndHumidity extends StatelessWidget {
               ),
             ],
           ),
-          dialog.buildButtonGroup(context),
+          TemperatureHumidityInputDialog(forcedLight: forcedLight).buildButtonGroup(context),
         ],
       ),
     );

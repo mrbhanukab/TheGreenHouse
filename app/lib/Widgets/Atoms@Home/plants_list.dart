@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -5,7 +6,8 @@ class PlantCard extends StatelessWidget {
   final bool needWater;
   final Map<String, dynamic> plantData;
 
-  const PlantCard({super.key, required this.needWater, required this.plantData});
+  const PlantCard(
+      {super.key, required this.needWater, required this.plantData});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,9 @@ class PlantCard extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: needWater ? const Color(0xFFDFECDC) : const Color(0xFFF2DFDF),
+                color: needWater
+                    ? const Color(0xFFDFECDC)
+                    : const Color(0xFFF2DFDF),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: SvgPicture.asset(
@@ -46,7 +50,7 @@ class PlantCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "🚰 ${plantData['humidity']}%",
+                  "🚰 ${plantData['moisture']}% (${plantData['limit']==0 ? '--' : plantData['limit']}%)",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 12,
@@ -69,7 +73,8 @@ class PlantCard extends StatelessWidget {
                       onPressed: () {},
                       color: Colors.black,
                       style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(Colors.white.withOpacity(0.8)),
+                        backgroundColor: WidgetStateProperty.all(
+                            Colors.white.withOpacity(0.8)),
                         shape: WidgetStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         )),
@@ -83,7 +88,8 @@ class PlantCard extends StatelessWidget {
                       onPressed: () {},
                       color: Colors.black,
                       style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(Colors.white.withOpacity(0.8)),
+                        backgroundColor: WidgetStateProperty.all(
+                            Colors.white.withOpacity(0.8)),
                         shape: WidgetStateProperty.all(RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         )),
@@ -101,23 +107,64 @@ class PlantCard extends StatelessWidget {
 }
 
 class PlantsList extends StatelessWidget {
-  const PlantsList({super.key});
+  final Map<String, dynamic> currentEnvironment;
+  final Map<String, dynamic> environmentLimits;
+
+  const PlantsList({
+    super.key,
+    required this.currentEnvironment,
+    required this.environmentLimits,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> plants = [
-      {'name': 'Cauliflower', 'humidity': 75},
-      {'name': 'Tomato', 'humidity': 40},
-      {'name': 'Lettuce', 'humidity': 80},
-      {'name': 'Pepper', 'humidity': 70},
-      {'name': 'Cauliflower', 'humidity': 75},
-      {'name': 'Tomato', 'humidity': 40},
-      {'name': 'Lettuce', 'humidity': 80},
-      {'name': 'Pepper', 'humidity': 70},
-    ];
+    final currentMoisture = currentEnvironment['moisture'];
+    final limitMoisture = environmentLimits['moisture'];
+
+    if (currentMoisture is! Map<String, dynamic> || limitMoisture is! Map<String, dynamic>) {
+      return const Center(
+        child: AutoSizeText(
+          "Something went wrong, most probably there is no plants registered yet.",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            height: 1.5,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+              color: Colors.red
+          ),
+          maxLines: 3,
+        ),
+      );
+    }
+
+    final List<Map<String, dynamic>> plants = currentMoisture.keys.map((plantName) {
+      return {
+        'name': plantName,
+        'moisture': currentMoisture[plantName] ?? 0,
+        'limit': limitMoisture[plantName] ?? 0,
+      };
+    }).toList();
+
+    // Sort alphabetically by name first, then by moisture level
+    plants.sort((a, b) {
+      int nameComparison = a['name'].compareTo(b['name']);
+      if (nameComparison != 0) {
+        return nameComparison;
+      }
+      return a['moisture'].compareTo(b['moisture']);
+    });
 
     return LayoutBuilder(
       builder: (context, constraints) {
+        if (plants.isEmpty) {
+          return const Center(
+            child: Text(
+              'No plants available',
+              style: TextStyle(fontSize: 18, color: Colors.red),
+            ),
+          );
+        }
+
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 15),
           width: constraints.maxWidth,
@@ -136,7 +183,7 @@ class PlantsList extends StatelessWidget {
                 child: Row(
                   children: plants.map((plant) {
                     return PlantCard(
-                      needWater: plant['humidity'] > 50,
+                      needWater: plant['moisture'] >= plant['limit'],
                       plantData: plant,
                     );
                   }).toList(),

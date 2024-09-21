@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AlertCard extends StatelessWidget {
   final Map<String, dynamic> alertData;
@@ -43,21 +44,12 @@ class AlertCard extends StatelessWidget {
 }
 
 class LatestAlerts extends StatelessWidget {
-  const LatestAlerts({super.key});
+  final Stream<List<Map<String, dynamic>>> alertsStream;
+
+  const LatestAlerts({super.key, required this.alertsStream});
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> alerts = [
-      {'message': 'Alex has Entered this Greenhouse!', 'timestamp': '2024.05.12 | 18:23'},
-      {'message': 'Temperature is too high!', 'timestamp': '2024.05.12 | 18:25'},
-      {'message': 'Humidity is too low!', 'timestamp': '2024.05.12 | 18:30'},
-      {'message': 'Water level is low!', 'timestamp': '2024.05.12 | 18:35'},
-      {'message': 'Linux has Entered this Greenhouse!', 'timestamp': '2024.05.12 | 18:23'},
-      {'message': 'Temperature is too high!', 'timestamp': '2024.05.12 | 18:25'},
-      {'message': 'Humidity is too low!', 'timestamp': '2024.05.12 | 18:30'},
-      {'message': 'Water level is low!', 'timestamp': '2024.05.12 | 18:35'},
-    ];
-
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
       width: MediaQuery.of(context).size.width,
@@ -71,13 +63,28 @@ class LatestAlerts extends StatelessWidget {
               fontWeight: FontWeight.w300,
             ),
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: alerts.map((alert) {
-                return AlertCard(alertData: alert);
-              }).toList(),
-            ),
+          StreamBuilder<List<Map<String, dynamic>>>(
+            stream: alertsStream,
+            builder: (context, alertSnapshot) {
+              if (alertSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (alertSnapshot.hasError) {
+                return const Center(child: Text('Error fetching alerts'));
+              } else if (!alertSnapshot.hasData || alertSnapshot.data!.isEmpty) {
+                final now = DateFormat('🗓️ yyyy-MM-dd ⌚ HH:mm').format(DateTime.now());
+                return AlertCard(alertData: {'message': 'No alerts available!  😴', 'timestamp': now});
+              }
+
+              final alerts = alertSnapshot.data!;
+              return SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  children: alerts.map((alert) {
+                    return AlertCard(alertData: alert);
+                  }).toList(),
+                ),
+              );
+            },
           ),
         ],
       ),

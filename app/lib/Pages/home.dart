@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:thegreenhouse/Widgets/Atoms@Home/ai_button.dart';
 import 'package:thegreenhouse/Widgets/Atoms@Home/latest_alerts.dart';
 import 'package:thegreenhouse/Widgets/Atoms@Home/plants_list.dart';
 import '../Widgets/Atoms@Home/temperature_and_humidity.dart';
 import '../Widgets/custom_menu.dart';
 import '../Widgets/account_option.dart';
+import '../Services/firestore.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final List<String> greenhouseNames;
+  const Home({super.key, required this.greenhouseNames});
 
   @override
   HomeState createState() => HomeState();
@@ -15,60 +18,74 @@ class Home extends StatefulWidget {
 
 class HomeState extends State<Home> {
   final GlobalKey _appBarKey = GlobalKey();
+  final FirestoreService _firestoreService = FirestoreService();
+  String selectedGreenhouseId = '';
 
-  Future<void> _handleRefresh() async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-    await Future.delayed(const Duration(seconds: 2));
-
-    scaffoldMessenger.showSnackBar(
-      const SnackBar(
-        content: Text(
-          'Latest update: 2 minutes ago!',
-          style: TextStyle(color: Colors.white),
-        ),
-        shape: StadiumBorder(),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Colors.black,
-        elevation: 5,
-      ),
-    );
-  }
-
-  void _handleMenuSelection(String result) {
-    print('Selected: $result');
+  @override
+  void initState() {
+    super.initState();
+    if (widget.greenhouseNames.isNotEmpty) {
+      _handleMenuSelection(widget.greenhouseNames.first);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white, // Set Scaffold background color to white
-        appBar: AppBar(
-          key: _appBarKey,
-          forceMaterialTransparency: true,
-          leading: CustomMenu(
-            onSelected: _handleMenuSelection,
-            appBarKey: _appBarKey,
-          ),
-          actions: [
-            AccountOption(appBarKey: _appBarKey),
-          ],
-          title: const Text('Malabe GH 1'),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        key: _appBarKey,
+        forceMaterialTransparency: true,
+        leading: CustomMenu(
+          onSelected: _handleMenuSelection,
+          appBarKey: _appBarKey,
+          greenhouseNames: widget.greenhouseNames,
         ),
-        body: RefreshIndicator(
-          color: Colors.black,
-          onRefresh: _handleRefresh,
-          child: const SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                TemperatureAndHumidity(),
-                PlantsList(),
-                LatestAlerts(),
-              ],
+        actions: [
+          AccountOption(appBarKey: _appBarKey),
+        ],
+        title: Text(selectedGreenhouseId.isEmpty ? 'Loading...' : selectedGreenhouseId),
+      ),
+      body: selectedGreenhouseId.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: _firestoreService.getGreenHouseInfoStream(selectedGreenhouseId),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return const Center(child: Text('Error fetching data'));
+                } else if (!snapshot.hasData || snapshot.data!.data() == null) {
+                  return const Center(child: Text('No data available'));
+                }
+
+                final data = snapshot.data!.data()!;
+                return SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      TemperatureAndHumidity(
+                        currentEnvironment: data['current environment'] ?? {},
+                        forcedLight: data['forced light'] ?? false,
+                        environmentLimits: data['environment limits'] ?? {},
+                      ),
+                      PlantsList(
+                        currentEnvironment: data['current environment'] ?? {},
+                        environmentLimits: data['environment limits'] ?? {},
+                      ),
+                      LatestAlerts(alertsStream: _firestoreService.getAlertsStream(selectedGreenhouseId)),
+                    ],
+                  ),
+                );
+              },
             ),
-          ),
-        ),
-        floatingActionButton: const AIButton());
+      floatingActionButton: const AIButton(),
+    );
+  }
+
+  void _handleMenuSelection(String greenhouseId) {
+    setState(() {
+      selectedGreenhouseId = greenhouseId;
+    });
   }
 }
