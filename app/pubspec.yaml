@@ -16,9 +16,9 @@ dependencies:
   firebase_auth: ^5.2.0
   google_sign_in: ^6.2.1
   auto_size_text: ^3.0.0
-  page_transition: ^2.1.0
   lottie: ^3.1.2
   flutter_svg: ^2.0.10+1
+  cloud_firestore: ^5.4.2
 
 dev_dependencies:
   flutter_test:

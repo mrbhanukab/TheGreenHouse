@@ -20,6 +20,7 @@ class HomeState extends State<Home> {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     await Future.delayed(const Duration(seconds: 2));
+
     scaffoldMessenger.showSnackBar(
       const SnackBar(
         content: Text(
@@ -41,34 +42,33 @@ class HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Set Scaffold background color to white
-      appBar: AppBar(
-        key: _appBarKey,
-        forceMaterialTransparency: true,
-        leading: CustomMenu(
-          onSelected: _handleMenuSelection,
-          appBarKey: _appBarKey,
+        backgroundColor: Colors.white, // Set Scaffold background color to white
+        appBar: AppBar(
+          key: _appBarKey,
+          forceMaterialTransparency: true,
+          leading: CustomMenu(
+            onSelected: _handleMenuSelection,
+            appBarKey: _appBarKey,
+          ),
+          actions: [
+            AccountOption(appBarKey: _appBarKey),
+          ],
+          title: const Text('Malabe GH 1'),
         ),
-        actions: [
-          AccountOption(appBarKey: _appBarKey),
-        ],
-        title: const Text('Malabe GH 1'),
-      ),
-      body: RefreshIndicator(
-        color: Colors.black,
-        onRefresh: _handleRefresh,
-        child: const SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              TemperatureAndHumidity(),
-              PlantsList(),
-              LatestAlerts(),
-            ],
+        body: RefreshIndicator(
+          color: Colors.black,
+          onRefresh: _handleRefresh,
+          child: const SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                TemperatureAndHumidity(),
+                PlantsList(),
+                LatestAlerts(),
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButton: const AIButton()
-    );
+        floatingActionButton: const AIButton());
   }
 }
