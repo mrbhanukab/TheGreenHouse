@@ -14,7 +14,6 @@
 
 //! These libraries must be installed before using this code
 #include <DHT.h>
-#include <DHT_U.h>
 
 //? The pin definitions for the DHT11, Heater, and Cooler
 #define DHTPIN A0
