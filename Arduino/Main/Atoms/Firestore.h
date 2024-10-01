@@ -60,7 +60,7 @@ Environment fetchEnvironmentLimitsOf(const char *greenhouse)
     Environment limit;
     WiFiClientSecure client = setupClient();
     HTTPClient http;
-    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greehouses/" + String(greenhouse) + "?mask.fieldPaths=currentEnvironment";
+    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greenhouses/" + String(greenhouse) + "?mask.fieldPaths=environmentLimits";
 
     if (http.begin(client, url))
     {
@@ -71,14 +71,14 @@ Environment fetchEnvironmentLimitsOf(const char *greenhouse)
             DeserializationError error = deserializeJson(doc, response);
             if (!error)
             {
-                JsonObject currentEnvironment = doc["fields"]["currentEnvironment"]["mapValue"]["fields"];
-                JsonObject moisture = currentEnvironment["moisture"]["mapValue"]["fields"];
+                JsonObject environmentLimits = doc["fields"]["environmentLimits"]["mapValue"]["fields"];
+                JsonObject moisture = environmentLimits["moisture"]["mapValue"]["fields"];
                 for (JsonPair kv : moisture)
                 {
                     limit.moisture[kv.key().c_str()] = kv.value()["integerValue"].as<int>();
                 }
-                limit.humidity = currentEnvironment["humidity"]["integerValue"].as<int>();
-                limit.temperature = currentEnvironment["temperature"]["integerValue"].as<int>();
+                limit.humidity = environmentLimits["humidity"]["integerValue"].as<int>();
+                limit.temperature = environmentLimits["temperature"]["integerValue"].as<int>();
             }
             else
             {
@@ -96,7 +96,7 @@ bool fetchForcedLightStatusOf(const char *greenhouse)
     bool forcedLightStatus = false;
     WiFiClientSecure client = setupClient();
     HTTPClient http;
-    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greehouses/" + String(greenhouse) + "?mask.fieldPaths=forcedLight";
+    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greenhouses/" + String(greenhouse) + "?mask.fieldPaths=forcedLight";
 
     if (http.begin(client, url))
     {
@@ -129,7 +129,7 @@ Environment setCurrentEnvironmentOf(const char *greenhouse, int temperature, int
     Environment updatedEnvironment;
     WiFiClientSecure client = setupClient();
     HTTPClient http;
-    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greehouses/" + String(greenhouse) + "?mask.fieldPaths=currentEnvironment&updateMask.fieldPaths=currentEnvironment";
+    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greenhouses/" + String(greenhouse) + "?mask.fieldPaths=currentEnvironment&updateMask.fieldPaths=currentEnvironment";
 
     if (http.begin(client, url))
     {
@@ -208,7 +208,7 @@ bool createNewAlert(const char *greenhouse, const char *type, const char *msg)
     unsigned long now = Get_Epoch_Time();
     String timestamp = String(now);
 
-    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greehouses/" + String(greenhouse) + "/AlertsAndLogs/" + timestamp;
+    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greenhouses/" + String(greenhouse) + "/AlertsAndLogs/" + timestamp;
 
     if (http.begin(client, url))
     {
