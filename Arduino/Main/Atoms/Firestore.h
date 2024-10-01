@@ -1,5 +1,4 @@
-/*
- *     _____ _              ___
+/*     _____ _              ___
  *    /__   \ |__   ___    / _ \_ __ ___  ___ _ __     /\  /\___  _   _ ___  ___
  *      / /\/ '_ \ / _ \  / /_\/ '__/ _ \/ _ \ '_ \   / /_/ / _ \| | | / __|/ _ \
  *     / /  | | | |  __/ / /_\\| | |  __/  __/ | | | / __  / (_) | |_| \__ \  __/
@@ -12,98 +11,238 @@
  *    refer to the following wiki link: [wiki link about this part of the code].
  */
 
-#include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-#include <WiFiClientSecureBearSSL.h>
-#include "Secrets/firebaseSecrets.h"
+#include <WiFiClientSecure.h>
+#include <ArduinoJson.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+#include <map>
 
-void fromFirestoreFetch(const char *documentPath)
+// Define NTP Client
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org");
+
+struct Environment
 {
-    std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
+    std::map<String, int> moisture;
+    int humidity;
+    int temperature;
+};
 
-    // Ignore SSL certificate validation for testing
-    client->setInsecure();
-
-    // create an HTTPClient instance
-    HTTPClient https;
-    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/" + String(documentPath);
-    Serial.println(url);
-    https.begin(*client, url); // Initialize HTTP request with WiFiClient in insecure mode
-
-    int httpResponseCode = https.GET(); // Send the request
-
-    Serial.printf("HTTP Response Code: %d\n", httpResponseCode); // Log response code
-
-    if (httpResponseCode > 0)
-    {
-        String response = https.getString(); // Get the response
-        Serial.println("Document JSON: ");
-        Serial.println(response); // Print the JSON document
-    }
-    else
-    {
-        Serial.printf("Error on sending GET: %s\n", https.errorToString(httpResponseCode).c_str());
-    }
-    https.end(); // Close the connection
+WiFiClientSecure setupClient()
+{
+    WiFiClientSecure client;
+    client.setInsecure(); // Ignore SSL certificate validation for testing
+    return client;
 }
 
-void inFirestoreSet(const char *fieldPath, const char *uptodateValues)
+bool handleHTTPResponse(HTTPClient &http, String &response)
 {
-    std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
-
-    // Ignore SSL certificate validation for testing
-    client->setInsecure();
-
-    // create an HTTPClient instance
-    HTTPClient https;
-    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greehouses/Malabe%20GH%2001?updateMask.fieldPaths=" + fieldPath;
-    String jsonPayload = "{ 'fields': { " + uptodateValues + " } }";
-    https.begin(*client, url); // Initialize HTTP request with WiFiClient in insecure mode
-
-    https.addHeader("Content-Type", "application/json");
-    int httpResponseCode = https.PATCH(jsonPayload); // Send the request
-
-    Serial.printf("HTTP Response Code: %d\n", httpResponseCode); // Log response code
-
+    int httpResponseCode = http.GET();
     if (httpResponseCode > 0)
     {
-        String response = https.getString(); // Get the response
-        Serial.println("Document JSON: ");
-        Serial.println(response); // Print the JSON document
+        Serial.printf("[HTTP] GET... code: %d\n", httpResponseCode);
+        if (httpResponseCode == HTTP_CODE_OK || httpResponseCode == HTTP_CODE_MOVED_PERMANENTLY)
+        {
+            response = http.getString();
+            return true;
+        }
     }
     else
     {
-        Serial.printf("Error on sending PATCH: %s\n", https.errorToString(httpResponseCode).c_str());
+        Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpResponseCode).c_str());
     }
-    https.end(); // Close the connection
+    return false;
 }
 
-void inFirestoreWrite(const char *documentPath)
+Environment fetchEnvironmentLimitsOf(const char *greenhouse)
 {
-    std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
+    Environment limit;
+    WiFiClientSecure client = setupClient();
+    HTTPClient http;
+    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greehouses/" + String(greenhouse) + "?mask.fieldPaths=currentEnvironment";
 
-    // Ignore SSL certificate validation for testing
-    client->setInsecure();
-
-    // create an HTTPClient instance
-    HTTPClient https;
-    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/" + String(documentPath);
-    Serial.println(url);
-    https.begin(*client, url); // Initialize HTTP request with WiFiClient in insecure mode
-
-    int httpResponseCode = https.GET(); // Send the request
-
-    Serial.printf("HTTP Response Code: %d\n", httpResponseCode); // Log response code
-
-    if (httpResponseCode > 0)
+    if (http.begin(client, url))
     {
-        String response = https.getString(); // Get the response
-        Serial.println("Document JSON: ");
-        Serial.println(response); // Print the JSON document
+        String response;
+        if (handleHTTPResponse(http, response))
+        {
+            DynamicJsonDocument doc(2048);
+            DeserializationError error = deserializeJson(doc, response);
+            if (!error)
+            {
+                JsonObject currentEnvironment = doc["fields"]["currentEnvironment"]["mapValue"]["fields"];
+                JsonObject moisture = currentEnvironment["moisture"]["mapValue"]["fields"];
+                for (JsonPair kv : moisture)
+                {
+                    limit.moisture[kv.key().c_str()] = kv.value()["integerValue"].as<int>();
+                }
+                limit.humidity = currentEnvironment["humidity"]["integerValue"].as<int>();
+                limit.temperature = currentEnvironment["temperature"]["integerValue"].as<int>();
+            }
+            else
+            {
+                Serial.print(F("deserializeJson() failed: "));
+                Serial.println(error.f_str());
+            }
+        }
+        http.end();
+    }
+    return limit;
+}
+
+bool fetchForcedLightStatusOf(const char *greenhouse)
+{
+    bool forcedLightStatus = false;
+    WiFiClientSecure client = setupClient();
+    HTTPClient http;
+    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greehouses/" + String(greenhouse) + "?mask.fieldPaths=forcedLight";
+
+    if (http.begin(client, url))
+    {
+        String response;
+        if (handleHTTPResponse(http, response))
+        {
+            DynamicJsonDocument doc(2048);
+            DeserializationError error = deserializeJson(doc, response);
+            if (!error)
+            {
+                JsonObject fields = doc["fields"];
+                if (fields.containsKey("forcedLight"))
+                {
+                    forcedLightStatus = fields["forcedLight"]["booleanValue"].as<bool>();
+                }
+            }
+            else
+            {
+                Serial.print(F("deserializeJson() failed: "));
+                Serial.println(error.f_str());
+            }
+        }
+        http.end();
+    }
+    return forcedLightStatus;
+}
+
+Environment setCurrentEnvironmentOf(const char *greenhouse, int temperature, int humidity, std::map<String, int> moisture)
+{
+    Environment updatedEnvironment;
+    WiFiClientSecure client = setupClient();
+    HTTPClient http;
+    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greehouses/" + String(greenhouse) + "?mask.fieldPaths=currentEnvironment&updateMask.fieldPaths=currentEnvironment";
+
+    if (http.begin(client, url))
+    {
+        http.addHeader("Accept", "application/json");
+        http.addHeader("Content-Type", "application/json");
+
+        DynamicJsonDocument doc(2048);
+        JsonObject fields = doc.createNestedObject("fields");
+        JsonObject currentEnvironment = fields.createNestedObject("currentEnvironment");
+        JsonObject mapValue = currentEnvironment.createNestedObject("mapValue");
+        JsonObject envFields = mapValue.createNestedObject("fields");
+
+        envFields["humidity"]["integerValue"] = String(humidity);
+        envFields["temperature"]["integerValue"] = String(temperature);
+
+        JsonObject moistureMap = envFields.createNestedObject("moisture").createNestedObject("mapValue").createNestedObject("fields");
+        for (const auto &kv : moisture)
+        {
+            moistureMap[kv.first]["integerValue"] = String(kv.second);
+        }
+
+        String payload;
+        serializeJson(doc, payload);
+
+        int httpResponseCode = http.PATCH(payload);
+        if (httpResponseCode > 0)
+        {
+            String response = http.getString();
+            DynamicJsonDocument responseDoc(2048);
+            DeserializationError error = deserializeJson(responseDoc, response);
+            if (!error)
+            {
+                JsonObject currentEnvironment = responseDoc["fields"]["currentEnvironment"]["mapValue"]["fields"];
+                JsonObject moisture = currentEnvironment["moisture"]["mapValue"]["fields"];
+                for (JsonPair kv : moisture)
+                {
+                    updatedEnvironment.moisture[kv.key().c_str()] = kv.value()["integerValue"].as<int>();
+                }
+                updatedEnvironment.humidity = currentEnvironment["humidity"]["integerValue"].as<int>();
+                updatedEnvironment.temperature = currentEnvironment["temperature"]["integerValue"].as<int>();
+            }
+            else
+            {
+                Serial.print(F("deserializeJson() failed: "));
+                Serial.println(error.f_str());
+            }
+        }
+        else
+        {
+            Serial.print("Error on sending PATCH: ");
+            Serial.println(httpResponseCode);
+        }
+
+        http.end();
     }
     else
     {
-        Serial.printf("Error on sending GET: %s\n", https.errorToString(httpResponseCode).c_str());
+        Serial.println("Unable to connect");
     }
-    https.end(); // Close the connection
+
+    return updatedEnvironment;
+}
+
+unsigned long Get_Epoch_Time()
+{
+    timeClient.update();
+    return timeClient.getEpochTime();
+}
+
+bool createNewAlert(const char *greenhouse, const char *type, const char *msg)
+{
+    WiFiClientSecure client = setupClient();
+    HTTPClient http;
+
+    // Get the current timestamp in Epoch format
+    unsigned long now = Get_Epoch_Time();
+    String timestamp = String(now);
+
+    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greehouses/" + String(greenhouse) + "/AlertsAndLogs/" + timestamp;
+
+    if (http.begin(client, url))
+    {
+        http.addHeader("Accept", "application/json");
+        http.addHeader("Content-Type", "application/json");
+
+        DynamicJsonDocument doc(1024);
+        JsonObject fields = doc.createNestedObject("fields");
+        fields["msg"]["stringValue"] = msg;
+        fields["type"]["stringValue"] = type;
+
+        String payload;
+        serializeJson(doc, payload);
+
+        int httpResponseCode = http.PATCH(payload);
+        if (httpResponseCode > 0)
+        {
+            String response = http.getString();
+            Serial.println("Alert created successfully:");
+            Serial.println(response);
+            return true;
+        }
+        else
+        {
+            Serial.print("Error on sending PATCH: ");
+            Serial.println(httpResponseCode);
+            return false;
+        }
+
+        http.end();
+    }
+    else
+    {
+        Serial.println("Unable to connect");
+        return false;
+    }
 }

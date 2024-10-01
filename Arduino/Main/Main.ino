@@ -12,23 +12,22 @@
  *    refer to the following wiki link: [wiki link about this part of the code].
  */
 
-
-#include <ArduinoJson.h>
-
-#include "Atoms/Secrets/wifiSecrets.h"
+//? Including Atoms
+#include "Atoms/WIFI.h"
 #include "Atoms/Firestore.h"
 
-
-
-void setup()
-{
+void setup() {
   Serial.begin(115200);
+  WIFISetup();
 }
 
-void loop()
-{
-    inFirestoreSet("forced light", "'fields': { 'forced light': { 'booleanValue': true }");
-    delay(2000);
-    inFirestoreSet("forced light", "'fields': { 'forced light': { 'booleanValue': false }");
-    delay(2000);
+void loop() {
+  struct connectionState wifiStatus = EnsureWIFIIsConnected();
+
+  if (wifiStatus.isConnected) {
+    Serial.print("Connected to SSID: ");
+    Serial.println(wifiStatus.ssid);
+
+
+  }
 }

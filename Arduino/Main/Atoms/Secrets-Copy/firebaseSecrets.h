@@ -1,4 +1,5 @@
 //! Firebase credentials
-#define API_KEY ""
-#define FIREBASE_PROJECT_ID ""
-#define FIREBASE_CLIENT_EMAIL ""
+#define PROJECT_ID "" // Project ID from Firebase
+#define API_KEY ""    // Web API key from Firebase Console
+#define USER_EMAIL "" // Email for Firebase Authentication
+#define USER_PASSWORD ""

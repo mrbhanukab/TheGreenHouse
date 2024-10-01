@@ -36,21 +36,26 @@ void WIFISetup()
 struct connectionState
 {
     bool isConnected;
-    char *ssid;
+    const char *ssid;
 };
 
 struct connectionState EnsureWIFIIsConnected()
 {
+    static char ssidBuffer[33]; // Buffer to hold the SSID (32 chars max for SSID + null terminator)
     struct connectionState current;
 
     if (wifiMulti.run(connectTimeoutMs) == WL_CONNECTED)
     {
         current.isConnected = true;
-        current.ssid = WiFi.SSID().c_str();
+        strncpy(ssidBuffer, WiFi.SSID().c_str(), sizeof(ssidBuffer) - 1);
+        ssidBuffer[sizeof(ssidBuffer) - 1] = '\0'; // Ensure null termination
+        current.ssid = ssidBuffer;
     }
     else
     {
         current.isConnected = false;
         current.ssid = "Not Connected";
     }
+
+    return current;
 }
