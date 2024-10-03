@@ -14,13 +14,14 @@
 
 //! These libraries must be installed before using this code
 #include <DHT.h>
+#include <DHT_U.h>
 
 //? The pin definitions for the DHT11, Heater, and Cooler
-#define DHTPIN A0
+#define DHTPIN D7
 #define DHTTYPE DHT11
-#define HEATER 7
-#define COOLER 8
-#define FAN 9
+#define HEATER D1
+#define COOLER D2
+#define FAN D3
 
 DHT dht(DHTPIN, DHTTYPE);
 

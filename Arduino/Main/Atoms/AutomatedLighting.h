@@ -16,10 +16,10 @@
 ? The pin definitions for the LDR, PIR sensor, and LED.
 ! LED should be connected to a PWM pin for variable brightness control.
 ! You can adjust the threshold value for darkness detection as needed. */
-byte led = 9;
-byte pir = 2;
+byte led = D2;
+byte pir = D3;
 byte ldr = A0;
-int threshold = 500;
+int threshold = 45;
 
 //! Must include this in setup() function of main code
 void AutomatedLightingSetup()
@@ -32,18 +32,20 @@ void AutomatedLightingSetup()
 void AutomatedLighting(bool isForcedLightOn)
 {
     //? Turn the LED on without considering any conditions, if forced light is on
-    if (isForcedLightOn)
+/*    if (isForcedLightOn)
     {
         digitalWrite(led, HIGH);
         return;
-    }
+    }*/
 
     //? Turn the LED on if it is dark and set brightness to high if motion is detected
-    int ldrValue = 1023 - analogRead(ldr);
-    byte motionState = digitalRead(pir);
+    int brightness = map(analogRead(ldr), 250, 970, 100, 0);
 
-    if (ldrValue < threshold)
+    Serial.print("LDR ");  Serial.println(brightness);
+    if (brightness < threshold)
     {
+    int motionState = digitalRead(pir);
+    Serial.print("Motion");Serial.println(motionState);
         if (motionState == HIGH)
             analogWrite(led, 255);
         else

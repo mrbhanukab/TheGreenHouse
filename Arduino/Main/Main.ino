@@ -15,19 +15,30 @@
 //? Including Atoms
 #include "Atoms/WIFI.h"
 #include "Atoms/Firestore.h"
+#include "Atoms/EnvironmentSensing.h"
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   WIFISetup();
+  EnvironmentSensingSetup();
 }
 
 void loop() {
   struct connectionState wifiStatus = EnsureWIFIIsConnected();
 
   if (wifiStatus.isConnected) {
-    Serial.print("Connected to SSID: ");
-    Serial.println(wifiStatus.ssid);
-
+    //  Serial.print("Connected to SSID: ");
+    //  Serial.println(wifiStatus.ssid);
+    Environment limits = fetchEnvironmentLimitsOf("Malabe-GH01");
+    Serial.print("Temperature limit: ");
+    Serial.println(limits.temperature);
+    Serial.print("Humidity limit: ");
+    Serial.println(limits.humidity);
+    environmentData currentData = ReturnEnvironmentData(limits.temperature, limits.humidity);
+    // In your loop() function:
+    std::map<String, int> moistureData = { { "plant1", 450 }, { "plant2", 500 } };
+    Environment updatedEnv = setCurrentEnvironmentOf("Malabe-GH01",currentData.temperature, currentData.humidity, moistureData);
 
   }
+  delay(3000);
 }
