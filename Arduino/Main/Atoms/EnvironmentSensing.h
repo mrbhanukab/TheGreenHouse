@@ -17,11 +17,11 @@
 #include <DHT_U.h>
 
 //? The pin definitions for the DHT11, Heater, and Cooler
-#define DHTPIN D7
+#define DHTPIN 25
 #define DHTTYPE DHT11
-#define HEATER D1
-#define COOLER D2
-#define FAN D3
+#define HEATER 13
+#define COOLER 12
+#define FAN 26
 
 DHT dht(DHTPIN, DHTTYPE);
 

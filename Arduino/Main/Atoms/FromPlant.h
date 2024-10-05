@@ -11,3 +11,32 @@
  *    was developed by Bhanuka Bandara. For more information about this section of the system, please
  *    refer to the following wiki link: [wiki link about this part of the code].
  */
+
+#include "Atoms/Firestore.h"
+
+// Initialize Serial for debugging and for communication with Pro Mini
+void setupPlantChat()
+{
+    Serial2.begin(9600, SERIAL_8N1, 16, 17); // Serial for Pro Mini communication
+    Serial2.println("Hello from ESP32!");     // Send a hello message to Pro Mini
+}
+
+void chatWithPlant(const char *PLANT_NAME, int SOIL_MOISTURE_LIMIT)
+{
+    // Prepare the message
+    String message = String(PLANT_NAME) + ":" + String(SOIL_MOISTURE_LIMIT) + ":?";
+
+    // Get the current epoch timestamp
+    unsigned long timestamp = Get_Epoch_Time();
+
+    // Send the message with timestamp
+    Serial2.println(String(timestamp) + ":" + message);
+    Serial.println("Sent: " + String(timestamp) + ":" + message); // Display the sent message in Serial Monitor
+
+    // Wait for response from Pro Mini
+    if (Serial2.available())
+    {
+        String response = Serial2.readStringUntil('\n');
+        Serial.println("Response: " + response); // Display the response in Serial Monitor
+    }
+}

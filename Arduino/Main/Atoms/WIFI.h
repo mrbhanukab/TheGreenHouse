@@ -15,10 +15,10 @@
 #include "Secrets/wifiSecrets.h"
 
 //! These libraries must be installed before using this code
-#include <ESP8266WiFi.h>
-#include <ESP8266WiFiMulti.h>
+#include <WiFi.h>
+#include <WiFiMulti.h>
 
-ESP8266WiFiMulti wifiMulti;
+WiFiMulti wifiMulti;
 const uint32_t connectTimeoutMs = 30000;
 
 //! Must include this in the setup() function of the main code
@@ -38,6 +38,11 @@ struct connectionState
     bool isConnected;
     const char *ssid;
 };
+
+void disconnectWIFI()
+{
+    WiFi.disconnect();
+}
 
 struct connectionState EnsureWIFIIsConnected()
 {

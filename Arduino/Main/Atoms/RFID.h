@@ -18,27 +18,26 @@
 #include <MFRC522DriverPinSimple.h>
 #include <MFRC522Debug.h>
 
-/*
-? MFRC522 Reader parameters
-! Configurable, take an unused pin.
-* PIN Layout: https://github.com/OSSLibraries/Arduino_MFRC522v2#pin-layout
-*/
-MFRC522DriverPinSimple ss_pin(10);
-MFRC522DriverSPI driver(ss_pin);
-MFRC522 reader(driver);
+// Setup for RFID reader pins
+MFRC522DriverPinSimple ss_pin(5); // Pin for SS (slave select)
+MFRC522DriverSPI driver(ss_pin);  // SPI driver for MFRC522
+MFRC522 reader(driver);           // RFID reader object
 
-//! Include this in the setup() function of the main code
+// Function to initialize the RFID reader
 void RFIDsetup()
 {
+    Serial.println("Initializing RFID reader...");
     reader.PCD_Init();
+    Serial.println("Initialized RFID reader...");
+    delay(100); // Small delay to allow RFID reader to initialize
 }
 
-String getRFIDUID()
+// Function to check for RFID UID asynchronously (non-blocking)
+void getRFIDUIDAsync(void (*callback)(const String &))
 {
-    String uidString = ""; // String to store the UID
-
     if (reader.PICC_IsNewCardPresent() && reader.PICC_ReadCardSerial())
     {
+        String uidString = "";
         for (byte i = 0; i < reader.uid.size; i++)
         {
             uidString += String(reader.uid.uidByte[i], HEX);
@@ -48,9 +47,11 @@ String getRFIDUID()
             }
         }
 
+        // Halt and stop encryption after reading the card
         reader.PICC_HaltA();
         reader.PCD_StopCrypto1();
-    }
 
-    return uidString;
+        // Send UID to the callback
+        callback(uidString);
+    }
 }

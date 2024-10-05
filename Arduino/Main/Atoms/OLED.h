@@ -37,12 +37,19 @@ void OLEDsetup()
     display.clearDisplay();
     display.setTextSize(1);
     display.setTextColor(SSD1306_WHITE);
+    display.clearDisplay();
 }
 
 //! You can simply use other methods from Adafruit_SSD1306 with display.method
-void ShowInOLED(byte X, byte Y, const char *text)
+void ShowInOLED(byte X, byte Y, int size, const char *text)
 {
+    display.clearDisplay();
+    display.setTextSize(size);
     display.setCursor(X, Y);
     display.print(text);
+    display.drawLine(0, 50, SCREEN_WIDTH, 50, SSD1306_WHITE);
+    display.setTextSize(1);
+    display.setCursor(2, 55);
+    display.print("hi!!!!!!!!!");
     display.display();
 }

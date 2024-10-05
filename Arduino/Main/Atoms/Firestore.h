@@ -3,15 +3,13 @@
  *      / /\/ '_ \ / _ \  / /_\/ '__/ _ \/ _ \ '_ \   / /_/ / _ \| | | / __|/ _ \
  *     / /  | | | |  __/ / /_\\| | |  __/  __/ | | | / __  / (_) | |_| \__ \  __/
  *     \/   |_| |_|\___| \____/|_|  \___|\___|_| |_| \/ /_/ \___/ \__,_|___/\___|
- *    Arduino Part | Firestore.h | Bhanuka Bandara
+ *    ESP32 Part | Firestore.h | Bhanuka Bandara
  *
- *    This entire system was developed and maintained by Bhanuka Bandara, Ruvindi Jayasooriya,
- *    Muditha Pasan, Yashara Wanigasekara, Safak Ahamed, and Sandini Imesha. This specific part
- *    was developed by Bhanuka Bandara. For more information about this section of the system, please
- *    refer to the following wiki link: [wiki link about this part of the code].
+ *    This system was upgraded for ESP32 compatibility.
  */
 
-#include <ESP8266HTTPClient.h>
+// Necessary libraries for ESP32
+#include <HTTPClient.h> // Use HTTPClient instead of ESP8266HTTPClient
 #include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
 #include <NTPClient.h>
@@ -22,6 +20,7 @@
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org");
 
+// Structure to hold environment data
 struct Environment
 {
     std::map<String, int> moisture;
@@ -29,13 +28,19 @@ struct Environment
     int temperature;
 };
 
-WiFiClientSecure setupClient()
+// Global secure WiFi client
+WiFiClientSecure client;
+
+// Initialize the WiFi client once
+void setupClient()
 {
-    WiFiClientSecure client;
-    client.setInsecure(); // Ignore SSL certificate validation for testing
-    return client;
+    if (!client.connected())
+    {
+        client.setInsecure(); // For testing purposes, ignore SSL certificate validation
+    }
 }
 
+// Handle the HTTP response from Firestore
 bool handleHTTPResponse(HTTPClient &http, String &response)
 {
     int httpResponseCode = http.GET();
@@ -55,10 +60,12 @@ bool handleHTTPResponse(HTTPClient &http, String &response)
     return false;
 }
 
+// Fetch environment limits from Firestore
 Environment fetchEnvironmentLimitsOf(const char *greenhouse)
 {
+    setupClient(); // Initialize the client
+
     Environment limit;
-    WiFiClientSecure client = setupClient();
     HTTPClient http;
     String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greenhouses/" + String(greenhouse) + "?mask.fieldPaths=environmentLimits";
 
@@ -91,10 +98,12 @@ Environment fetchEnvironmentLimitsOf(const char *greenhouse)
     return limit;
 }
 
+// Fetch forced light status from Firestore
 bool fetchForcedLightStatusOf(const char *greenhouse)
 {
+    setupClient(); // Ensure client is initialized
+
     bool forcedLightStatus = false;
-    WiFiClientSecure client = setupClient();
     HTTPClient http;
     String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greenhouses/" + String(greenhouse) + "?mask.fieldPaths=forcedLight";
 
@@ -124,10 +133,12 @@ bool fetchForcedLightStatusOf(const char *greenhouse)
     return forcedLightStatus;
 }
 
+// Set current environment values in Firestore
 Environment setCurrentEnvironmentOf(const char *greenhouse, int temperature, int humidity, std::map<String, int> moisture)
 {
+    setupClient(); // Ensure client is initialized
+
     Environment updatedEnvironment;
-    WiFiClientSecure client = setupClient();
     HTTPClient http;
     String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greenhouses/" + String(greenhouse) + "?mask.fieldPaths=currentEnvironment&updateMask.fieldPaths=currentEnvironment";
 
@@ -141,7 +152,6 @@ Environment setCurrentEnvironmentOf(const char *greenhouse, int temperature, int
         JsonObject currentEnvironment = fields.createNestedObject("currentEnvironment");
         JsonObject mapValue = currentEnvironment.createNestedObject("mapValue");
         JsonObject envFields = mapValue.createNestedObject("fields");
-
         envFields["humidity"]["integerValue"] = String(humidity);
         envFields["temperature"]["integerValue"] = String(temperature);
 
@@ -182,32 +192,32 @@ Environment setCurrentEnvironmentOf(const char *greenhouse, int temperature, int
             Serial.print("Error on sending PATCH: ");
             Serial.println(httpResponseCode);
         }
-
         http.end();
     }
     else
     {
         Serial.println("Unable to connect");
     }
-
     return updatedEnvironment;
 }
 
+// Fetch epoch time using NTPClient
 unsigned long Get_Epoch_Time()
 {
     timeClient.update();
     return timeClient.getEpochTime();
 }
 
+// Create a new alert in Firestore
 bool createNewAlert(const char *greenhouse, const char *type, const char *msg)
 {
-    WiFiClientSecure client = setupClient();
+    setupClient(); // Ensure the client is initialized
+
     HTTPClient http;
 
     // Get the current timestamp in Epoch format
     unsigned long now = Get_Epoch_Time();
     String timestamp = String(now);
-
     String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents/greenhouses/" + String(greenhouse) + "/AlertsAndLogs/" + timestamp;
 
     if (http.begin(client, url))
@@ -237,12 +247,107 @@ bool createNewAlert(const char *greenhouse, const char *type, const char *msg)
             Serial.println(httpResponseCode);
             return false;
         }
-
         http.end();
     }
     else
     {
         Serial.println("Unable to connect");
         return false;
+    }
+}
+
+// Function to authenticate user asynchronously
+void asyncAuthenticatingUser(const String &cardId, const String &greenhouseId, void (*callback)(const String &))
+{
+    // Make sure WiFiClientSecure is initialized
+    setupClient();
+
+    HTTPClient http;
+    String url = "https://firestore.googleapis.com/v1/projects/the-green-house-p9/databases/(default)/documents:runQuery";
+
+    // Construct the JSON body for the Firestore query
+    String queryPayload = "{\"structuredQuery\": {"
+                          "\"from\": [{\"collectionId\": \"users\"}],"
+                          "\"where\": {"
+                          "\"fieldFilter\": {"
+                          "\"field\": {\"fieldPath\": \"cardid\"},"
+                          "\"op\": \"EQUAL\","
+                          "\"value\": {\"stringValue\": \"" +
+                          cardId + "\"}"
+                                   "}"
+                                   "},"
+                                   "\"limit\": 1"
+                                   "}}";
+
+    // Start the HTTP POST request
+    if (http.begin(client, url))
+    {
+        http.addHeader("Content-Type", "application/json");
+        http.addHeader("Accept", "application/json");
+
+        int httpCode = http.POST(queryPayload); // Send the POST request with the query payload
+
+        if (httpCode > 0)
+        {
+            String response = http.getString();
+
+            // Deserialize the JSON response
+            DynamicJsonDocument doc(2048);
+            DeserializationError error = deserializeJson(doc, response);
+
+            if (!error)
+            {
+                if (!doc.isNull() && doc[0]["document"].isNull() == false)
+                {
+                    JsonObject fields = doc[0]["document"]["fields"];
+                    String userName = fields["name"]["stringValue"];
+                    JsonArray userGreenhouses = fields["greenhouses"]["arrayValue"]["values"];
+
+                    bool hasAccess = false;
+
+                    // Loop through the user's greenhouses and check if they have access
+                    for (JsonVariant greenhouse : userGreenhouses)
+                    {
+                        if (greenhouse["stringValue"] == greenhouseId)
+                        {
+                            hasAccess = true;
+                            break;
+                        }
+                    }
+
+                    if (hasAccess)
+                    {
+                        callback("Hi, " + userName + "!");
+                    }
+                    else
+                    {
+                        callback(userName + ", you are unauthorized.");
+                    }
+                }
+                else
+                {
+                    callback("No user found.");
+                }
+            }
+            else
+            {
+                Serial.print(F("deserializeJson() failed: "));
+                Serial.println(error.f_str());
+                callback("Error in data.");
+            }
+        }
+        else
+        {
+            Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
+            callback("Connection failed.");
+        }
+
+        // Always end the HTTP request
+        http.end();
+    }
+    else
+    {
+        Serial.println("Unable to connect");
+        callback("Connection failed.");
     }
 }
