@@ -65,14 +65,14 @@ body: selectedGreenhouseId.isEmpty
             child: Column(
               children: [
                 TemperatureAndHumidity(
-                  currentEnvironment: data['current environment'] ?? {},
+                  currentEnvironment: data['currentEnvironment'] ?? {},
                   forcedLight: data['forced light'] ?? false,
-                  environmentLimits: data['environment limits'] ?? {},
+                  environmentLimits: data['environmentLimits'] ?? {},
                   greenhouseId: selectedGreenhouseId,
                 ),
                 PlantsList(
-                  currentEnvironment: data['current environment'] ?? {},
-                  environmentLimits: data['environment limits'] ?? {},
+                  currentEnvironment: data['currentEnvironment'] ?? {},
+                  environmentLimits: data['environmentLimits'] ?? {},
                   greenhouseId: selectedGreenhouseId,
                 ),
                 LatestAlerts(alertsStream: _firestoreService.getAlertsStream(selectedGreenhouseId)),
