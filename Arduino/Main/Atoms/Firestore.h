@@ -46,7 +46,6 @@ bool handleHTTPResponse(HTTPClient &http, String &response)
     int httpResponseCode = http.GET();
     if (httpResponseCode > 0)
     {
-        Serial.printf("[HTTP] GET... code: %d\n", httpResponseCode);
         if (httpResponseCode == HTTP_CODE_OK || httpResponseCode == HTTP_CODE_MOVED_PERMANENTLY)
         {
             response = http.getString();
@@ -112,7 +111,7 @@ bool fetchForcedLightStatusOf(const char *greenhouse)
         String response;
         if (handleHTTPResponse(http, response))
         {
-            DynamicJsonDocument doc(2048);
+            DynamicJsonDocument doc(1024);
             DeserializationError error = deserializeJson(doc, response);
             if (!error)
             {
@@ -225,7 +224,7 @@ bool createNewAlert(const char *greenhouse, const char *type, const char *msg)
         http.addHeader("Accept", "application/json");
         http.addHeader("Content-Type", "application/json");
 
-        DynamicJsonDocument doc(1024);
+        DynamicJsonDocument doc(2048);
         JsonObject fields = doc.createNestedObject("fields");
         fields["msg"]["stringValue"] = msg;
         fields["type"]["stringValue"] = type;
@@ -237,8 +236,6 @@ bool createNewAlert(const char *greenhouse, const char *type, const char *msg)
         if (httpResponseCode > 0)
         {
             String response = http.getString();
-            Serial.println("Alert created successfully:");
-            Serial.println(response);
             return true;
         }
         else
@@ -257,7 +254,7 @@ bool createNewAlert(const char *greenhouse, const char *type, const char *msg)
 }
 
 // Function to authenticate user asynchronously
-void asyncAuthenticatingUser(const String &cardId, const String &greenhouseId, void (*callback)(const String &))
+void asyncAuthenticatingUser(const String &cardId, const String &greenhouseId, void (*callback)(const byte &, const String &))
 {
     // Make sure WiFiClientSecure is initialized
     setupClient();
@@ -292,12 +289,12 @@ void asyncAuthenticatingUser(const String &cardId, const String &greenhouseId, v
             String response = http.getString();
 
             // Deserialize the JSON response
-            DynamicJsonDocument doc(2048);
+            DynamicJsonDocument doc(512);
             DeserializationError error = deserializeJson(doc, response);
 
             if (!error)
             {
-                if (!doc.isNull() && doc[0]["document"].isNull() == false)
+                if (!doc.isNull() && !doc[0]["document"].isNull())
                 {
                     JsonObject fields = doc[0]["document"]["fields"];
                     String userName = fields["name"]["stringValue"];
@@ -317,29 +314,29 @@ void asyncAuthenticatingUser(const String &cardId, const String &greenhouseId, v
 
                     if (hasAccess)
                     {
-                        callback("Hi, " + userName + "!");
+                        callback(1, userName); // Return authenticated status and user name
                     }
                     else
                     {
-                        callback(userName + ", you are unauthorized.");
+                        callback(2, userName); // Return not authenticated status and user name
                     }
                 }
                 else
                 {
-                    callback("No user found.");
+                    callback(3, ""); // Return user not found status
                 }
             }
             else
             {
                 Serial.print(F("deserializeJson() failed: "));
                 Serial.println(error.f_str());
-                callback("Error in data.");
+                callback(4, ""); // Return error
             }
         }
         else
         {
             Serial.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
-            callback("Connection failed.");
+            callback(5, ""); // Return error
         }
 
         // Always end the HTTP request
@@ -348,6 +345,6 @@ void asyncAuthenticatingUser(const String &cardId, const String &greenhouseId, v
     else
     {
         Serial.println("Unable to connect");
-        callback("Connection failed.");
+        callback(6, ""); // Return error
     }
 }

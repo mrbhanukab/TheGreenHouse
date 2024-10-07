@@ -18,7 +18,7 @@
 
 #define BUZZER_PIN 14
 
-int melody[] = {
+int melodyAuth[] = {
     NOTE_B4, NOTE_B5, NOTE_FS5, NOTE_DS5,
     NOTE_B5, NOTE_FS5, NOTE_DS5, NOTE_C5,
     NOTE_C6, NOTE_G6, NOTE_E6, NOTE_C6, NOTE_G6, NOTE_E6,
@@ -27,7 +27,7 @@ int melody[] = {
     NOTE_FS5, NOTE_DS5, NOTE_DS5, NOTE_E5, NOTE_F5,
     NOTE_F5, NOTE_FS5, NOTE_G5, NOTE_G5, NOTE_GS5, NOTE_A5, NOTE_B5};
 
-int durations[] = {
+int durationsAuth[] = {
     16, 16, 16, 16,
     32, 16, 8, 16,
     16, 16, 16, 32, 16, 8,
@@ -35,6 +35,30 @@ int durations[] = {
     16, 16, 16, 16, 32,
     16, 8, 32, 32, 32,
     32, 32, 32, 32, 32, 16, 8};
+
+int melodyNotAuth[] = {
+    NOTE_E5, NOTE_B4, NOTE_C5, NOTE_D5, NOTE_C5, NOTE_B4,
+    NOTE_A4, NOTE_A4, NOTE_C5, NOTE_E5, NOTE_D5, NOTE_C5,
+    NOTE_B4, NOTE_C5, NOTE_D5, NOTE_E5,
+    NOTE_C5, NOTE_A4, NOTE_A4, NOTE_A4, NOTE_B4, NOTE_C5,
+
+    NOTE_D5, NOTE_F5, NOTE_A5, NOTE_G5, NOTE_F5,
+    NOTE_E5, NOTE_C5, NOTE_E5, NOTE_D5, NOTE_C5,
+    NOTE_B4, NOTE_B4, NOTE_C5, NOTE_D5, NOTE_E5,
+    NOTE_C5, NOTE_A4, NOTE_A4, REST,
+};
+
+int durationsNotAuth[] = {
+    4, 8, 8, 4, 8, 8,
+    4, 8, 8, 4, 8, 8,
+    4, 8, 4, 4,
+    4, 4, 8, 4, 8, 8,
+
+    4, 8, 4, 8, 8,
+    4, 8, 4, 8, 8,
+    4, 8, 8, 4, 4,
+    4, 4, 4, 4,
+    };
 
 //? The pin definitions for the Buzzer.
 #define BUZZER_PIN 14
@@ -55,20 +79,41 @@ void BuzzerOn(bool isBuzzerOn)
         digitalWrite(BUZZER_PIN, LOW);
     }
 }
-void welcomeTone()
+void authTone()
 {
-    int size = sizeof(durations) / sizeof(int);
+    int size = sizeof(durationsAuth) / sizeof(int);
 
     for (int note = 0; note < size; note++)
     {
         // to calculate the note duration, take one second divided by the note type.
         // e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-        int duration = 1000 / durations[note];
-        tone(BUZZER_PIN, melody[note], duration);
+        int duration = 1000 / durationsAuth[note];
+        tone(BUZZER_PIN, melodyAuth[note], duration);
 
         // to distinguish the notes, set a minimum time between them.
         // the note's duration + 30% seems to work well:
-        int pauseBetweenNotes = duration * 1.30;
+        int pauseBetweenNotes = duration * 1.20;
+        delay(pauseBetweenNotes);
+
+        // stop the tone playing:
+        noTone(BUZZER_PIN);
+    }
+}
+
+void notAuthTone()
+{
+    int size = sizeof(durationsNotAuth) / sizeof(int);
+
+    for (int note = 0; note < size; note++)
+    {
+        // to calculate the note duration, take one second divided by the note type.
+        // e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+        int duration = 1000 / durationsNotAuth[note];
+        tone(BUZZER_PIN, melodyNotAuth[note], duration);
+
+        // to distinguish the notes, set a minimum time between them.
+        // the note's duration + 50% seems to work well:
+        int pauseBetweenNotes = duration * 1.50;
         delay(pauseBetweenNotes);
 
         // stop the tone playing:

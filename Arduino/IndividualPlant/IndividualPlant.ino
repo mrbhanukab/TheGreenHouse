@@ -1,13 +1,12 @@
 // Define the plant name
-#define PLANT_NAME "Strawberry-01" // Corrected spelling
+#define PLANT_NAME "Strawberry-01"
 
 // Initialize the soil moisture level (replace with actual sensor reading)
 int currentSoilMoistureLevel = 30; // Example value
 
 // Initialize Serial for communication
 void setup() {
-    Serial.begin(9600); // Serial for communication with ESP32
-    Serial.println("Hi, from Pro Mini!");
+    Serial.begin(115200); // Serial for communication with ESP32
 }
 
 void loop() {
@@ -15,6 +14,7 @@ void loop() {
     if (Serial.available()) {
         String receivedData = Serial.readStringUntil('\n');
         Serial.println(receivedData);
+
         // Check if the received data contains the PLANT_NAME
         if (receivedData.indexOf(PLANT_NAME) != -1) {
             Serial.println("Received Data: " + receivedData);

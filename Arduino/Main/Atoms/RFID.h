@@ -50,7 +50,7 @@ void getRFIDUIDAsync(void (*callback)(const String &))
         // Halt and stop encryption after reading the card
         reader.PICC_HaltA();
         reader.PCD_StopCrypto1();
-
+        Serial.println(uidString);
         // Send UID to the callback
         callback(uidString);
     }

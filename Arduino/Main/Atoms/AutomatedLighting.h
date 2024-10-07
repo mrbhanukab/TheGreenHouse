@@ -31,29 +31,31 @@ void AutomatedLightingSetup()
 
 void AutomatedLighting(bool isForcedLightOn)
 {
+    Serial.println(isForcedLightOn);
     //? Turn the LED on without considering any conditions, if forced light is on
     if (isForcedLightOn)
     {
-        digitalWrite(led, HIGH);
-        return;
-    }
-
-    //? Turn the LED on if it is dark and set brightness to high if motion is detected
-    //! Optmize for room lighting (0-4095 is the range of LDR)
-    int brightness = map(analogRead(ldr), 300, 3400, 0, 100);
-
-    // Serial.print("LDR ");
-    // Serial.println(brightness);
-    if (brightness < threshold)
-    {
-        int motionState = digitalRead(pir);
-        // Serial.print("Motion");
-        // Serial.println(motionState);
-        if (motionState == HIGH)
-            analogWrite(led, 255);
-        else
-            analogWrite(led, 50); //! Change the brightness level as needed
+        analogWrite(led, 255);
     }
     else
-        analogWrite(led, 0);
+    {
+        //? Turn the LED on if it is dark and set brightness to high if motion is detected
+        //! Optmize for room lighting (0-4095 is the range of LDR)
+        int brightness = map(analogRead(ldr), 300, 3400, 0, 100);
+        Serial.println(brightness);
+
+        if (brightness <= threshold)
+        {
+            byte motionState = digitalRead(pir);
+            Serial.println(motionState);
+            if (motionState == HIGH)
+                analogWrite(led, 255);
+            else
+                analogWrite(led, 50);
+        }
+        else
+        {
+            analogWrite(led, 0);
+        }
+    }
 }

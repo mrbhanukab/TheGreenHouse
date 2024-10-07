@@ -13,103 +13,118 @@
  */
 
 //? Including Atoms
+#include "Atoms/AutomatedLighting.h"
+#include "Atoms/Buzzer.h"
+#include "Atoms/EnvironmentSensing.h"
+#include "Atoms/Firestore.h"
 #include "Atoms/FromPlant.h"
+#include "Atoms/OLED.h"
+#include "Atoms/RFID.h"
 #include "Atoms/WIFI.h"
-// #include "Atoms/Firestore.h"
-// #include "Atoms/RFID.h"
-// #include "Atoms/Buzzer.h"
-// #include "Atoms/OLED.h"
-// #include "Atoms/AutomatedLighting.h"
-// #include "Atoms/EnvironmentSensing.h"
 
-// unsigned long lastRFIDCheck = 0;         // Timer to track RFID check
-// const unsigned long RFIDInterval = 500;  // Interval between RFID checks (in ms)
+// Timing variables
+unsigned long previousMillisRFID = 0;
+unsigned long previousMillisEnvironment = 0;
+unsigned long previousMillisForcedLight = 0;
+
+// Interval constants
+const long intervalEnvironment = 1000;
+const long intervalForcedLight = 3000; // 3 seconds
+const long intervalAutomatedLighting = 100; // 100 milliseconds
+
+// Task handle for the automated lighting task
+TaskHandle_t AutomatedLightingTaskHandle = NULL;
+
+// Global variable to store the forced light status
+bool isForcedLightOn = false;
 
 void setup() {
-  //! For the board
   Serial.begin(115200);
-  setupPlantChat();
-  // OLEDsetup();
   disconnectWIFI();
+  OLEDsetup();
+  bootingSplash(false);
   WIFISetup();
-  // RFIDsetup();
-  // BuzzerSetup();
-  // AutomatedLightingSetup();
-  // EnvironmentSensingSetup();
+  RFIDsetup();
+  AutomatedLightingSetup();
+  BuzzerSetup();
+  EnvironmentSensingSetup();
+  delay(1200);
+  bootingSplash(true);
+  delay(1000);
+  display.clearDisplay();
+  display.display();
 }
 
-// void handleAuthResult(const String &message) {
-//     Serial.println(message);
-// }
-
 void loop() {
-  // Check Wi-Fi connection status
   struct connectionState wifiStatus = EnsureWIFIIsConnected();
 
   if (wifiStatus.isConnected) {
-    Serial.print("Connected to SSID: ");
-    Serial.println(wifiStatus.ssid);
-        // Only call the chat function if connected
-        chatWithPlant("Strawberry-01", 25); // Example moisture limit
-        
-        // Wait a bit before the next call to avoid flooding
-        delay(1000);
+    getRFIDUIDAsync(onRFIDReceived);
+    runEnvironmentSensing();
+    bottomPanel(wifiStatus.ssid, wifiStatus.ip);
+
+    // Fetch the forced light status every 3 seconds
+    unsigned long currentMillis = millis();
+    if (currentMillis - previousMillisForcedLight >= intervalForcedLight) {
+      previousMillisForcedLight = currentMillis;
+      isForcedLightOn = fetchForcedLightStatusOf("Malabe-GH01");
+    }
+
+    // Create the automated lighting task if not already created
+    if (AutomatedLightingTaskHandle == NULL) {
+      xTaskCreate(runAutomatedLightingTask, "AutomatedLightingTask", 8192, NULL, 1, &AutomatedLightingTaskHandle); // Let FreeRTOS decide the core
+    }
   } else {
-    Serial.println("Wi-Fi Not Connected.");
+    reconnectingScreeen();
+
+    // Delete the automated lighting task if it is created
+    if (AutomatedLightingTaskHandle != NULL) {
+      vTaskDelete(AutomatedLightingTaskHandle);
+      AutomatedLightingTaskHandle = NULL;
+    }
   }
-
-  // // Asynchronously check for RFID cards every RFIDInterval milliseconds
-  // unsigned long currentMillis = millis();
-  // if (currentMillis - lastRFIDCheck >= RFIDInterval) {
-  //   lastRFIDCheck = currentMillis;
-  //   getRFIDUIDAsync(printUID);
-  // }
-
-  delay(1000);
 }
 
-// // Callback function to print the UID to the Serial monitor
-// void welcomeToneTask(void *parameter);
-// void notifyTask(void *parameter);
+void runEnvironmentSensing() {
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillisEnvironment >= intervalEnvironment) {
+    previousMillisEnvironment = currentMillis;
+    Environment limits = fetchEnvironmentLimitsOf("Malabe-GH01");
+    struct environmentData currentData = ReturnEnvironmentData(limits.temperature, limits.humidity);
+    showCurrentTempratureAndHumidity(currentData.temperature, currentData.humidity);
+    std::map<String, int> moistureData = {{"Strawberry-01", 60}};
+    setCurrentEnvironmentOf("Malabe-GH01", currentData.temperature, currentData.humidity, moistureData);
+  }
+}
 
-// // Function to handle printing RFID UID and executing tasks concurrently
-// void printUID(const String &uid) {
-//   if (uid != "") {
-//     Serial.print("RFID UID: ");
-//     Serial.println(uid);
+void runAutomatedLightingTask(void *pvParameters) {
+  for (;;) {
+    Serial.println("Running runAutomatedLighting");
+    AutomatedLighting(isForcedLightOn);
+    vTaskDelay(intervalAutomatedLighting / portTICK_PERIOD_MS); // Delay for 100 milliseconds
+  }
+}
 
-//     // Create two tasks to run welcomeTone and Serial print concurrently
-//     xTaskCreatePinnedToCore(
-//       welcomeToneTask,    // Function that handles the welcome tone
-//       "welcomeToneTask",  // Task name
-//       4096,               // Stack size for the task
-//       NULL,               // Parameter for the task (none needed)
-//       1,                  // Task priority (1 is default)
-//       NULL,               // Task handle (can be null if not needed)
-//       0                   // Core 0 (run this task on Core 0)
-//     );
-
-//     xTaskCreatePinnedToCore(
-//       notifyTask,    // Function that handles Serial printing
-//       "notifyTask",  // Task name
-//       4096,          // Stack size for the task
-//       NULL,          // Parameter for the task (none needed)
-//       1,             // Task priority (1 is default)
-//       NULL,          // Task handle (can be null if not needed)
-//       1              // Core 1 (run this task on Core 1)
-//     );
-//   }
-// }
-
-// // Task for running the welcomeTone function
-// void welcomeToneTask(void *parameter) {
-//   welcomeTone();
-//   vTaskDelete(NULL);
-// }
-
-// // Task for printing 'h' to Serial
-// void notifyTask(void *parameter) {
-//   Serial.print("hi");
-//   ShowInOLED(0, 0, 2, "Hi");
-//   vTaskDelete(NULL);
-// }
+void onRFIDReceived(const String &uid) {
+  validatingUserScreeen();
+  asyncAuthenticatingUser(uid, "Malabe-GH01", [](const byte &status, const String &userName) {
+    if (status == 1) {
+      String message = userName + " entered the greenhouse!";
+      if (createNewAlert("Malabe-GH01", "security", message.c_str())) {
+        validStatusUserScreeen(1);
+        authTone();
+      } else {
+        validStatusUserScreeen(4);
+      }
+    } else if (status == 2) {
+      validStatusUserScreeen(2);
+      notAuthTone();
+    } else if (status == 3) {
+      validStatusUserScreeen(3);
+      notAuthTone();
+    } else {
+      validStatusUserScreeen(4);
+      notAuthTone();
+    }
+  });
+}
