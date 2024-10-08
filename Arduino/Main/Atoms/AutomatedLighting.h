@@ -15,47 +15,52 @@
 /*
 ? The pin definitions for the LDR, PIR sensor, and LED.
 ! LED should be connected to a PWM pin for variable brightness control.
-! You can adjust the threshold value for darkness detection as needed. */
-byte led = 33;
-byte pir = 35;
-byte ldr = 32;
-int threshold = 45;
+! You can adjust the threshold value for darkness detection as needed.
+ */
+#define LED 33 // LED pin
+#define PIR 35 // PIR sensor pin
+#define LDR 32 // LDR sensor pin
 
-//! Must include this in setup() function of main code
+int threshold = 45;     // Brightness threshold
+int pwmFreq = 5000;     // PWM frequency (5kHz)
+int pwmResolution = 13; // PWM resolution (13 bits = 0-8191 duty cycle range)
+
+//! Must include this in setup() function of the main code
 void AutomatedLightingSetup()
 {
-    pinMode(pir, INPUT);
-    pinMode(ldr, INPUT);
-    pinMode(led, OUTPUT);
+    ledcAttach(LED, pwmFreq, pwmResolution);
+
+    // Set up other pins
+    pinMode(PIR, INPUT);
+    pinMode(LDR, INPUT);
 }
 
 void AutomatedLighting(bool isForcedLightOn)
 {
-    Serial.println(isForcedLightOn);
+
     //? Turn the LED on without considering any conditions, if forced light is on
     if (isForcedLightOn)
     {
-        analogWrite(led, 255);
+        ledcWrite(LED, 8191);
     }
     else
     {
         //? Turn the LED on if it is dark and set brightness to high if motion is detected
-        //! Optmize for room lighting (0-4095 is the range of LDR)
-        int brightness = map(analogRead(ldr), 300, 3400, 0, 100);
-        Serial.println(brightness);
+        //! Optimize for room lighting (0-4095 is the range of LDR)
+        int brightness = map(analogRead(LDR), 0, 4095, 0, 100); // Adjust LDR range based on calibration
 
         if (brightness <= threshold)
         {
-            byte motionState = digitalRead(pir);
-            Serial.println(motionState);
+            byte motionState = digitalRead(PIR);
+
             if (motionState == HIGH)
-                analogWrite(led, 255);
+                ledcWrite(LED, 8191);
             else
-                analogWrite(led, 50);
+                ledcWrite(LED, 2047);
         }
         else
         {
-            analogWrite(led, 0);
+            ledcWrite(LED, 0);
         }
     }
 }

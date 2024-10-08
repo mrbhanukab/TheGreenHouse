@@ -12,32 +12,50 @@
  *    refer to the following wiki link: [wiki link about this part of the code].
  */
 
+#include <HardwareSerial.h>
+
+HardwareSerial SerialPort(2); // we are using UART2
+
+void chatSetup()
+{
+    SerialPort.begin(38400, SERIAL_8N1, 16, 17);
+}
+
 int chatWithPlant(const char *PLANT_NAME, int SOIL_MOISTURE_LIMIT)
 {
     // Prepare the message
     unsigned long timestamp = Get_Epoch_Time();
-    String message = String(timestamp) + ":" + String(PLANT_NAME) + ":" + String(SOIL_MOISTURE_LIMIT) + ":?";
-
-    // Send the message with timestamp
-    Serial.println(message);
-
-    // Wait for response from Pro Mini
-    while (!Serial.available())
+    String message = String(timestamp) + ":" + String(PLANT_NAME) + ":" + String(SOIL_MOISTURE_LIMIT) + ":?\n"; // Add newline character
+    SerialPort.println(message);
+    unsigned long startMillis = millis();
+    while (SerialPort.available() > 0)
     {
-        // Wait for data to be available
+        String receivedData = SerialPort.readStringUntil('\n'); // Read until newline character
+        int firstColonIndex = receivedData.indexOf(':');
+        int secondColonIndex = receivedData.indexOf(':', firstColonIndex + 1);
+        int thirdColonIndex = receivedData.indexOf(':', secondColonIndex + 1);
+        if (secondColonIndex != -1 && secondColonIndex > firstColonIndex)
+        {
+            String receivedPlantName = receivedData.substring(firstColonIndex + 1, secondColonIndex);
+            if (receivedPlantName.equals(PLANT_NAME))
+            {
+                // Extract the soil moisture current as a string and convert to int
+                String soilMoistureCurrentStr = receivedData.substring(thirdColonIndex + 1);
+                soilMoistureCurrentStr.trim();                              // Trim any whitespace or newlines
+                int SOIL_MOISTURE_Current = soilMoistureCurrentStr.toInt(); // Convert to int
+
+                return SOIL_MOISTURE_Current; // Return the current soil moisture
+            }
+            else
+            {
+                Serial.println("Received plant name does not match the expected name.");
+                return -1;
+            }
+        }
     }
-
-    // Read the response
-    String response = Serial.readStringUntil('\n');
-
-    // Parse the response to extract SOIL_MOISTURE_Current
-    int firstColonIndex = response.indexOf(':');
-    int secondColonIndex = response.indexOf(':', firstColonIndex + 1);
-    int thirdColonIndex = response.indexOf(':', secondColonIndex + 1);
-
-    String soilMoistureCurrentStr = response.substring(thirdColonIndex + 1);
-    int SOIL_MOISTURE_Current = soilMoistureCurrentStr.toInt();
-
-    // Return the current soil moisture
-    return SOIL_MOISTURE_Current;
+    while (!(SerialPort.available() > 0))
+    {
+        Serial.println("Timeout waiting for response");
+        return -1; // Indicate timeout
+    }
 }
