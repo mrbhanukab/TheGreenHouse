@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:thegreenhouse/Widgets/Atoms@Home/ai_popup.dart';
 
 class AIButton extends StatelessWidget {
-  const AIButton({super.key});
+  final int temperature;
+  final int humidity;
+
+  const AIButton({
+    super.key,
+    required this.temperature,
+    required this.humidity,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +24,15 @@ class AIButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(50),
         ),
         onPressed: () {
-          // Add your onPressed code here!
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AIChatScreen(
+                temperature: temperature,
+                humidity: humidity,
+              ),
+            ),
+          );
         },
         child: Lottie.asset(
           "assets/AI-Hi.json",
