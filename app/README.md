@@ -1,5 +1,3 @@
-Here’s the improved version with technical terms and grammar corrections:
-
 ```
  _____ _              ___
 /__   \ |__   ___    / _ \_ __ ___  ___ _ __     /\  /\___  _   _ ___  ___
