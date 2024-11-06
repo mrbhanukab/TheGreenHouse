@@ -1,87 +1,105 @@
-Just the template, details coming Soon!!
+```
+ _____ _              ___
+/__   \ |__   ___    / _ \_ __ ___  ___ _ __     /\  /\___  _   _ ___  ___
+  / /\/ '_ \ / _ \  / /_\/ '__/ _ \/ _ \ '_ \   / /_/ / _ \| | | / __|/ _ \
+ / /  | | | |  __/ / /_\\| | |  __/  __/ | | | / __  / (_) | |_| \__ \  __/
+ \/   |_| |_|\___| \____/|_|  \___|\___|_| |_| \/ /_/ \___/ \__,_|___/\___|
+The State-of-the-Art Greenhouse |  The ReadMe.md 📖
+```
 
-# The Green House
+Our project, **The Greenhouse**, is a cool, state-of-the-art system we built to manage greenhouses efficiently. Created and maintained by Bhanuka Bandara, Ruvindi Jayasooriya, Muditha Pasan, Yashara Wanigasekara, Safak Ahamed, and Sandini Imesha, this was our **1st Year 1st Semester Group Project** at university. We took it pretty seriously, treating it like a competition. Not only did we create an Arduino-based greenhouse project, but we also developed a pixel-perfect mobile app with cutting-edge AI tech.
 
-A state-of-the-art greenhouse system developed and maintained by Bhanuka Bandara, Ruvindi Jayasooriya
-Muditha Pasan, Yashara Wanigasekara, Safak Ahamed, and Sandini Imesha for University 1st Year 1st Semester Group Project.
+---
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Setup & Installation](#setup--installation)
-- [Usage](#usage)
-- [Contribution Guidelines](#contribution-guidelines)
-- [License](#license)
-- [Credits](#credits)
+## Our Team
+<table>
+<tr>
+<td><img src="/Documents/ReadmeContent/team.png"/></td>
+<td>
+<ul>
+<li>Bhanuka Bandara</li>
+<li>Ruvindi Jayasooriya</li>
+<li>Muditha Pasan</li>
+<li>Yashara Wanigasekara</li>
+<li>Safak Ahamed</li>
+<li>Sandini Imesha</li>
+</ul>
+</td>
+</tr>
+</table>
 
-## Introduction
+---
 
-Detailed introduction about the project. What problem does it solve? Who are its target users?
+## Timeline
+
+### Preparing Proposal Presentation
+<img src="/Documents/ReadmeContent/Preparing.jpeg"/>
+
+### Proposal Presentation
+<table>
+<tr>
+<td>To sum it up, it went perfectly! Even better than we expected. Everyone was listening intently, with big smiles on their faces. The marking lecturers even said, "Compared to final-year projects, superb!" That says it all. 😊</td>
+<td><img src="/Documents/ReadmeContent/ProposalPresentation.png"/></td>
+</tr>
+</table>
+
+### Development Stage
+Honestly, this stage was a headache! Our project was much more complicated than the others, so it gave us a lot of trouble. Let’s not even go into the details here, but trust me, it was stressful.
+
+### Final Exhibition
+<table>
+<tr>
+<td><img src="/Documents/ReadmeContent/greenhouse.jpeg"/></td>
+<td>To be honest, the final exhibition didn’t go exactly as we hoped. We managed to finish about 97% of the project because we ran into some time issues. But hey, we still made it through, and that’s a win in our books! 🥳</td>
+</tr>
+<tr>
+<td colspan="2"><img src="/Documents/ReadmeContent/Final.jpeg"/></td>
+</tr>
+</table>
+
+---
 
 ## Features
 
-- Feature 1: Brief description of feature.
-- Feature 2: Brief description of feature.
-- ...
+- Manage an **unlimited number of plants individually**
+- **Fully automated** plant watering system for each plant
+- **Automatic environmental control** (temperature and humidity)
+- **Real-time** data monitoring
+- Advanced **security system**
+- Beautiful and simple **cross-platform mobile app**
+- **AI integration** for intelligent decision-making
+- And many more fancy features!
+
+---
 
 ## Technologies Used
 
-- **Language/Framework:** Description (e.g., **Python:** For back-end logic)
-- **Platform/Environment:** Description (e.g., **Arduino:** For hardware interfacing)
-- **Library/Dependency:** Description (e.g., **React:** For front-end development)
-- ...
+- **Flutter**: We used Flutter, an open-source UI software development kit created by Google, to build the mobile app. It allowed us to develop a cross-platform app that runs smoothly on both Android and iOS devices, offering a consistent user experience.
 
-## Supported operating systems
+- **Arduino**: Arduino was the backbone of our greenhouse sensor management. It helped us control the various sensors and systems in the greenhouse, like temperature, humidity, and plant watering, ensuring everything worked automatically and efficiently.
+
+---
+
+## Supported Operating Systems for Mobile App
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![iOS](https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=ios&logoColor=white)
 
-## Setup & Installation
+---
 
-### Prerequisites
+## Contribution Guidelines + License
 
-- List of software, libraries, or hardware requirements.
+> **Contributions are welcome!** <br />
+> This project is licensed under a custom open-source license. Please make sure to review it before submitting pull requests. We created this license to ensure you add **new and creative things!** We encourage you to fork the repo, contribute, and build on our ideas. Together, we can make it even better.
 
-### Steps
+---
 
-1. First step (e.g., Clone the repo: `git clone https://github.com/yourusername/projectname.git`).
-2. Second step (e.g., Navigate to the project folder: `cd projectname`).
-3. ...
-4. Final step (e.g., Start the server, Upload to Arduino, etc.)
+## Optimizations & Features You Can Contribute
 
-## Usage
+We had to stop working on this project due to time constraints (university life, you know!), and we’re not maintaining it either. But hey, this is where you come in! There’s still plenty you can add:
 
-How to use the application or code after installation. This could include code snippets, screenshots, or any other helpful details.
-
-```bash
-# Code snippet or command example
-```
-
-
-## Optimizations
-
-What optimizations did you make in your code? E.g. refactors, performance improvements, accessibility
-
-
-
-## Contribution Guidelines
-
-If you're looking to contribute, please follow these guidelines:
-
-1. Fork the repository.
-2. Make your changes in a new branch.
-3. Submit a pull request.
-
-Detailed contribution guidelines can be found in [CONTRIBUTING.md](link-to-contributing-md-if-you-have-one).
-
-## License
-
-This project is licensed under the [Name of License](link-to-license). See the [LICENSE](link-to-license-file) file for details.
-
-## Credits
-{Project Name} is created by [mrbhanukab](https://github.com/mrbhanukab). Feel free to contribute, report issues, or provide suggestions on the GitHub repository.
-
-[![github](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mrbhanukab)
-[![twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/mrbhanuka)
-[![linkedin](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/bhanuka-bandara-8a209420a)
-[![twitter](https://img.shields.io/badge/Kaggle-20BEFF?style=for-the-badge&logo=Kaggle&logoColor=white)](https://www.kaggle.com/bhanukabandara)
+- Complete the **individual plant-to-main board communication** feature
+- Integrate **Gemini AI** to fully automate processes with advanced AI
+- Connect with **Siri, Google Assistant, Alexa**, or any other voice assistants
+- Enable AI to make phone calls or allow users to call the AI and ask for updates like a real human
+- Incorporate **drone and camera** technology to provide real-time feeds to the mobile app
+- Honestly, the sky’s the limit – be the next Steve Jobs and take this project to the next level!
