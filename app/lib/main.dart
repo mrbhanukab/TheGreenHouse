@@ -3,16 +3,18 @@ import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:thegreenhouse/Services/login_flow_control.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'firebase_options.dart';
 
 late String version;
 
-void main() async{
+Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await dotenv.load(fileName: ".env");
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   version = packageInfo.version;
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {

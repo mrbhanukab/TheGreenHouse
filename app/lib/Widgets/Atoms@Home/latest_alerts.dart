@@ -65,18 +65,20 @@ class _LatestAlertsState extends State<LatestAlerts> {
     _subscribeToAlerts();
   }
 
-  void _subscribeToAlerts() {
-    widget.alertsStream.listen((alerts) async {
-      setState(() {
-        _isLoading = true;
-      });
-      await Future.delayed(const Duration(milliseconds: 500));
-      setState(() {
-        _alerts = alerts;
-        _isLoading = false;
-      });
+void _subscribeToAlerts() {
+  widget.alertsStream.listen((alerts) async {
+    setState(() {
+      _isLoading = true;
     });
-  }
+    await Future.delayed(const Duration(milliseconds: 500));
+    final dateFormat = DateFormat('🗓️ yyyy-MM-dd ⌚ HH:mm');
+    alerts.sort((a, b) => dateFormat.parse(b['timestamp']).compareTo(dateFormat.parse(a['timestamp'])));
+    setState(() {
+      _alerts = alerts;
+      _isLoading = false;
+    });
+  });
+}
 
   @override
   Widget build(BuildContext context) {
