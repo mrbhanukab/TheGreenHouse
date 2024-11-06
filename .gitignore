@@ -1,4 +1,2 @@
-
-app/.idea/
-
-app/android/app/google-services.json
+Arduino/Main/Atoms/Secrets/firebaseSecrets.h
+Arduino/Main/Atoms/Secrets/wifiSecrets.h
