@@ -93,7 +93,7 @@ void runEnvironmentSensing() {
     Environment limits = fetchEnvironmentLimitsOf("Malabe-GH01");
     struct environmentData currentData = ReturnEnvironmentData(limits.temperature, limits.humidity);
     showCurrentTempratureAndHumidity(currentData.temperature, currentData.humidity);
-    Serial.println("Chat: " + chatWithPlant("Strawberry-01", limits.humidity));
+    // Serial.println("Chat: " + chatWithPlant("Strawberry-01", limits.humidity));
     std::map<String, int> moistureData = {{"Strawberry-01", 60}};
     setCurrentEnvironmentOf("Malabe-GH01", currentData.temperature, currentData.humidity, moistureData);
   }

@@ -12,10 +12,6 @@
  *    refer to the following wiki link: [wiki link about this part of the code].
  */
 
-//! These libraries must be installed before using this code
-//? Download: https://github.com/hibit-dev/buzzer/blob/master/lib/pitches.zip
-#include "pitches.h"
-
 #define BUZZER_PIN 14
 
 int melodyAuth[] = {
