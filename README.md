@@ -14,7 +14,7 @@ Our project, **The Greenhouse**, is a cool, state-of-the-art system we built to 
 ## Our Team
 <table>
 <tr>
-<td><img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/team.png"/></td>
+<td><img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/team.png"/></td>
 <td>
 <ul>
 <li>Bhanuka Bandara</li>
@@ -33,13 +33,13 @@ Our project, **The Greenhouse**, is a cool, state-of-the-art system we built to 
 ## Timeline
 
 ### Preparing Proposal Presentation
-<img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/Preparing.jpeg"/>
+<img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/Preparing.jpeg"/>
 
 ### Proposal Presentation
 <table>
 <tr>
 <td>To sum it up, it went perfectly! Even better than we expected. Everyone was listening intently, with big smiles on their faces. The marking lecturers even said, "Compared to final-year projects, superb!" That says it all. 😊</td>
-<td><img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/ProposalPresentation.png"/></td>
+<td><img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/ProposalPresentation.png"/></td>
 </tr>
 </table>
 
@@ -49,11 +49,11 @@ Honestly, this stage was a headache! Our project was much more complicated than 
 ### Final Exhibition
 <table>
 <tr>
-<td><img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/greenhouse.jpeg"/></td>
+<td><img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/greenhouse.jpeg"/></td>
 <td>To be honest, the final exhibition didn’t go exactly as we hoped. We managed to finish about 97% of the project because we ran into some time issues. But hey, we still made it through, and that’s a win in our books! 🥳</td>
 </tr>
 <tr>
-<td colspan="2"><img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/Final.jpeg"/></td>
+<td colspan="2"><img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/Final.jpeg"/></td>
 </tr>
 </table>
 
@@ -83,11 +83,11 @@ Honestly, this stage was a headache! Our project was much more complicated than 
 ## Mobile App Preview
 <table>
  <tr>
-  <td> <img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/1.jpeg" /> </td>
-    <td> <img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/2.jpeg" /> </td>
-    <td> <img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/3.jpeg" /> </td>
-    <td> <img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/4.jpeg" /> </td>
-    <td> <img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/5.jpeg" /> </td>
+  <td> <img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/1.jpeg" /> </td>
+    <td> <img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/2.jpeg" /> </td>
+    <td> <img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/3.jpeg" /> </td>
+    <td> <img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/4.jpeg" /> </td>
+    <td> <img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/5.jpeg" /> </td>
  </tr>
 </table>
 
