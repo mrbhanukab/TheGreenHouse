@@ -6,7 +6,7 @@ const greenHouseState = {
   humidityLimit: 0,
   updateESP: (ws, update) => {
     const changes = [];
-    const stateKeys = ['forcedLight', 'currentTemperature', 'currentHumidity', 'temperatureLimit', 'humidityLimit'];
+    const stateKeys = ['forcedLight', 'temperatureLimit', 'humidityLimit'];
 
     stateKeys.forEach(key => {
       if (update[key] !== greenHouseState[key]) {

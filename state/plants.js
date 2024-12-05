@@ -11,7 +11,7 @@ const plantsState = {
     };
 
     const changes = [];
-    const stateKeys = ['currentMoisture', 'moistureLimits', 'moistureSensor', 'pump'];
+    const stateKeys = ['moistureLimits', 'moistureSensor', 'pump'];
 
     stateKeys.forEach(key => {
       if (update[key] !== currentPlantState[key]) {
