@@ -1,69 +1,77 @@
-const { Query } = require("node-appwrite");
-
-const { database } = require("./appwrite");
+const {Query} = require("node-appwrite");
+const {database} = require("./appwrite");
 const parseTextToObject = require("./parser");
 
 const waitForMessage = async (ws) => {
-  return new Promise((resolve) => {
-    ws.once("message", async (message) => {
-      try {
-        if (Buffer.isBuffer(message)) {
-          message = message.toString("utf-8");
-        }
-        const received = parseTextToObject(message);
-        const databaseList = await database.listDatabases([
-          Query.equal("name", received.company),
-        ]);
-        if (databaseList.total === 0) {
-          throw new Error("Database not found");
-        }
+    return new Promise((resolve) => {
+        ws.once("message", async (message) => {
+            try {
+                // Convert message to string if it's a buffer
+                if (Buffer.isBuffer(message)) {
+                    message = message.toString("utf-8");
+                }
 
-        const collectionsList = await database.listCollections(
-          databaseList.databases[0]["$id"],
-        );
-        if (collectionsList.total === 0) {
-          throw new Error("Collections not found");
-        }
+                // Parse the received message into an object
+                const received = parseTextToObject(message);
 
-        const collections = collectionsList.collections.map((collection) => ({
-          name: collection.name,
-          $id: collection.$id,
-        }));
+                // Fetch the database list
+                const databaseList = await database.listDatabases([Query.equal("name", received.company)]);
 
-        const greenHousesList = await database.listDocuments(
-          databaseList.databases[0]["$id"],
-          collections[0]["$id"],
-          [Query.equal("name", received.greenhouse)],
-        );
-        if (greenHousesList.total === 0) {
-          throw new Error("Database not found");
-        }
-        const plants = await database.listDocuments(
-          databaseList.databases[0]["$id"],
-          collections[1]["$id"],
-          [Query.equal("greenHouse", greenHousesList.documents[0]["$id"])],
-        );
-        let plantKeyValuePairs = "0";
-        if (plants.total > 0) {
-          plantKeyValuePairs = plants.documents
-            .map(
-              (plant) =>
-                `${plant.name}:moisture=${plant.moistureSensor},pump=${plant.pump}`,
-            )
-            .join(";");
-        }
-        ws.send(plantKeyValuePairs);
-        resolve({
-          database: databaseList.databases[0]["$id"],
-          greenhouse: greenHousesList.documents[0]["$id"],
-          collections: collections,
+                // Check if the database exists
+                if (databaseList.total === 0) throw new Error("Database not found");
+
+                // Fetch the collections list
+                const collectionsList = await database.listCollections(databaseList.databases[0]["$id"]);
+
+                // Check if collections exist
+                if (collectionsList.total === 0) throw new Error("Collections not found");
+
+                // Map collections to a simpler format
+                const collections = collectionsList.collections.map((collection) => ({
+                    name: collection.name,
+                    $id: collection.$id,
+                }));
+
+                // Fetch the greenhouse document
+                const greenHousesList = await database.listDocuments(
+                    databaseList.databases[0]["$id"],
+                    collections[0]["$id"],
+                    [Query.equal("name", received.greenHouse)]
+                );
+
+                // Check if the greenhouse exists
+                if (greenHousesList.total === 0) throw new Error("Greenhouse not found");
+
+                // Fetch the plants documents
+                const plants = await database.listDocuments(
+                    databaseList.databases[0]["$id"],
+                    collections[1]["$id"],
+                    [Query.equal("greenHouse", greenHousesList.documents[0]["$id"])]
+                );
+
+                // Create a string of plant key-value pairs
+                const plantKeyValuePairs = plants.total > 0
+                    ? plants.documents.map(
+                        (plant) => `${plant.name}:moisturePin=${plant.moistureSensor},pumpPin=${plant.pump}`
+                    ).join(";")
+                    : "0";
+
+                // Send the plant key-value pairs to the WebSocket client
+                ws.send(plantKeyValuePairs);
+
+                // Resolve the promise with the database and greenhouse information
+                resolve({
+                    database: databaseList.databases[0]["$id"],
+                    greenHouse: greenHousesList.documents[0]["$id"],
+                    collections,
+                });
+            } catch (error) {
+                // Log the error and send an error message to the WebSocket client
+                console.log(error.message);
+                ws.send("whoareyou?");
+            }
         });
-      } catch (error) {
-        console.log(error.message);
-        ws.send("whoareyou?");
-      }
     });
-  });
 };
 
-module.exports = { waitForMessage };
+module.exports = {waitForMessage};

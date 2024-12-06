@@ -4,12 +4,22 @@
  * @returns {Object} - The resulting object with key-value pairs.
  */
 
-function parseTextToObject(text) {
-    return text.split(';').reduce((acc, pair) => {
-        const [key, value] = pair.split('=');
-        acc[key] = value;
-        return acc;
-    }, {});
-}
+const parseTextToObject = (text) => {
+  const obj = {};
+  const pairs = text.split(';');
+
+  pairs.forEach(pair => {
+    const [key, value] = pair.split('=');
+    if (value === 'true' || value === 'false') {
+      obj[key] = value === 'true';
+    } else if (!isNaN(value)) {
+      obj[key] = Number(value);
+    } else {
+      obj[key] = value;
+    }
+  });
+
+  return obj;
+};
 
 module.exports = parseTextToObject;

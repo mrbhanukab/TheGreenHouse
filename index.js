@@ -4,15 +4,18 @@ const WebSocket = require('ws');
 const {waitForMessage} = require("./utils/setup");
 const espState = require("./state/espState");
 const dbState = require("./state/dbState");
+const {database} = require("./utils/appwrite");
 
 const app = express();
 const wss = new WebSocket.Server({port: process.env.PORT});
 
-wss.on('connection', async (ws) => {
-    console.log('Client connected');
+app.listen(process.env.WEBHOOK);
 
+wss.on('connection', async (ws) => {
     //! awaiting the device initialization message
     const company = await waitForMessage(ws);
+    const greenHouseId = company.collections.find(collection => collection.name === 'greenHouse')?.$id ?? null;
+    await database.offline(company.database, greenHouseId, company.greenHouse, true)
 
     //! managing state:esp32 State
     await espState(ws, app, company);
@@ -25,13 +28,13 @@ wss.on('connection', async (ws) => {
         dbState(ws, message, company);
     });
 
-    ws.on('close', () => {
-        console.log('Client disconnected');
-    });
+    console.log(company);
+    const handleDisconnect = () => {
+        const greenHouseId = company.collections.find(collection => collection.name === 'greenHouse')?.$id ?? null;
+        database.offline(company.database, greenHouseId, company.greenHouse, false)
+    };
 
-    ws.on('error', (error) => {
-        console.error('WebSocket error:', error);
-    });
+    ws.on('close', handleDisconnect);
+    ws.on('error', handleDisconnect);
 });
 
-console.log('WebSocket server listening on port ', process.env.PORT);

@@ -19,6 +19,14 @@ const database = {
     listDocuments: async (databaseID, collectionId, query = []) => {
         return await databases.listDocuments(databaseID, collectionId, [...query]);
     },
+    updateDocument: async (databaseID, collectionId, documentId, data) => {
+        return await databases.updateDocument(databaseID, collectionId, documentId, data);
+    },
+    offline: async (databaseID, collectionId, documentId, set) => {
+        return await databases.updateDocument(databaseID, collectionId, documentId, {
+            "online": set
+        });
+    },
 
 }
 
