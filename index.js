@@ -14,6 +14,7 @@ app.listen(process.env.WEBHOOK);
 wss.on('connection', async (ws) => {
     //! awaiting the device initialization message
     const company = await waitForMessage(ws);
+    console.log(company);
     const greenHouseId = company.collections.find(collection => collection.name === 'greenHouse')?.$id ?? null;
     await database.offline(company.database, greenHouseId, company.greenHouse, true)
 
