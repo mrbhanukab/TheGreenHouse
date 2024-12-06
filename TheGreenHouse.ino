@@ -1,6 +1,11 @@
 #include "WIFI.h"
 #include "OLED.h"
-#include "websocket.h"
+#include <WebSocketsClient.h>
+
+#define serverAddress "192.168.43.238"
+#define serverPort 3005
+
+WebSocketsClient webSocket;
 
 void setup() {
   Serial.begin(115200);
@@ -16,7 +21,6 @@ void setup() {
   bootingSplash("Init WS...");
   webSocket.begin(serverAddress, serverPort, "/");
   webSocket.onEvent(webSocketEvent);
-  webSocket.setReconnectInterval(3000);
 
   bootingSplash("Done!");
   delay(500);
@@ -25,12 +29,37 @@ void setup() {
 }
 
 void loop() {
+  webSocket.loop();
   webSocket.sendTXT("auth/afasf");
   delay(2000);
 }
 
+void webSocketEvent(WStype_t type, uint8_t *payload, size_t length) {
+    String message = String((char *)payload);
 
+    switch (type) {
+      case WStype_DISCONNECTED:
+        Serial.println("WebSocket disconnected!");
+        break;
 
+      case WStype_CONNECTED:
+        Serial.println("WebSocket connected!");
+        // Send a message to the server upon connection
+        webSocket.sendTXT("company=blackHoleCorp;greenHouse=GH-MA-01");
+        break;
+
+      case WStype_TEXT:
+        Serial.println("Message received from server: " + message);
+        break;
+
+      case WStype_ERROR:
+        Serial.println("WebSocket error occurred!");
+        break;
+
+      default:
+        break;
+    }
+  }
 
 
 // //? Including Atoms
