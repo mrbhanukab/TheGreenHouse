@@ -1,181 +1,73 @@
-#include "WIFI.h"
-#include "OLED.h"
-#include <WebSocketsClient.h>
+#include "Atoms/globalVariables.h"
+#include "Atoms/secrets.h"
+#include "Atoms/definePins.h"
 
-#define serverAddress "192.168.43.238"
-#define serverPort 3005
+#include "Atoms/WIFI.h"
+#include "Atoms/OLED.h"
+#include "Atoms/Buzzer.h"
+#include "Atoms/websocket.h"
+#include "Atoms/RFID.h"
+#include "Atoms/DHTsense.h"
+#include "Atoms/plant.h"
 
-WebSocketsClient webSocket;
+unsigned long previousMillisDHT = 0;
+unsigned long previousMillisWebSocket = 0;
+const long intervalDHT = 1000;      // 1 second
+const long intervalWebSocket = 10;  // 10 milliseconds
+
+TaskHandle_t RFIDTaskHandle = NULL;
 
 void setup() {
   Serial.begin(115200);
   disconnectWIFI();
   OLEDsetup();
-
   bootingSplash("Version 3.0");
   delay(1000);
-
+  bootingSplash("Init I/O...");
+  setupIO();
   bootingSplash("Init WiFi...");
   WIFISetup();
-
-  bootingSplash("Init WS...");
-  webSocket.begin(serverAddress, serverPort, "/");
-  webSocket.onEvent(webSocketEvent);
-
-  bootingSplash("Done!");
-  delay(500);
-  display.clearDisplay();
-  display.display();
+  bootingSplash("Init RFID...");
+  RFIDsetup();
+  bootingSplash("Init DHT...");
+  DHTSetup();
+  bootingSplash("Init WebSocket...");
+  webhookSetup();
+  bootingSplash("Init Buzzer...");
+  BuzzerSetup();
+  bootingSplash("Init Tasks...");
+  xTaskCreate(
+    readRFID,        // Task function
+    "Read RFID",     // Task name
+    2000,            // Stack size (in words)
+    NULL,            // Task input parameter
+    1,               // Priority of the task
+    &RFIDTaskHandle  // Task handle
+  );
+    bootingSplash("Done!");
+    delay(500);
+    display.clearDisplay();
+    display.display();
 }
 
 void loop() {
-  webSocket.loop();
-  webSocket.sendTXT("auth/afasf");
-  delay(2000);
-}
+  struct connectionState wifiStatus = EnsureWIFIIsConnected();
+  if (wifiStatus.isConnected) {
+    unsigned long currentMillis = millis();
+    showCurrentTempratureAndHumidity(previousTemperature, previousHumidity);
+    bottomPanel(wifiStatus.ssid, wifiStatus.ip, connected);
 
-void webSocketEvent(WStype_t type, uint8_t *payload, size_t length) {
-    String message = String((char *)payload);
-
-    switch (type) {
-      case WStype_DISCONNECTED:
-        Serial.println("WebSocket disconnected!");
-        break;
-
-      case WStype_CONNECTED:
-        Serial.println("WebSocket connected!");
-        // Send a message to the server upon connection
-        webSocket.sendTXT("company=blackHoleCorp;greenHouse=GH-MA-01");
-        break;
-
-      case WStype_TEXT:
-        Serial.println("Message received from server: " + message);
-        break;
-
-      case WStype_ERROR:
-        Serial.println("WebSocket error occurred!");
-        break;
-
-      default:
-        break;
+    if (currentMillis - previousMillisDHT >= intervalDHT) {
+      previousMillisDHT = currentMillis;
+      readPlant();
+      checkAndSendDHTData();
     }
+
+    if (currentMillis - previousMillisWebSocket >= intervalWebSocket) {
+      previousMillisWebSocket = currentMillis;
+      readWebSocket();
+    }
+  } else {
+    reconnectingScreen();
   }
-
-
-// //? Including Atoms
-// #include "Atoms/AutomatedLighting.h"
-// #include "Atoms/Buzzer.h"
-// #include "Atoms/EnvironmentSensing.h"
-// #include "Atoms/Firestore.h"
-// #include "Atoms/FromPlant.h"
-// #include "Atoms/OLED.h"
-// #include "Atoms/RFID.h"
-// #include "Atoms/WIFI.h"
-
-// // Timing variables
-// unsigned long previousMillisRFID = 0;
-// unsigned long previousMillisEnvironment = 0;
-// unsigned long previousMillisForcedLight = 0;
-
-// // Interval constants
-// const long intervalEnvironment = 1000;
-// const long intervalForcedLight = 3000; // 3 seconds
-// const long intervalAutomatedLighting = 100; // 100 milliseconds
-
-// // Task handle for the automated lighting task
-// TaskHandle_t AutomatedLightingTaskHandle = NULL;
-
-// // Global variable to store the forced light status
-// bool isForcedLightOn = false;
-
-// void setup() {
-//   Serial.begin(115200);
-//   disconnectWIFI();
-//   OLEDsetup();
-//   bootingSplash(false);
-//   WIFISetup();
-//   chatSetup();
-//   RFIDsetup();
-//   AutomatedLightingSetup();
-//   BuzzerSetup();
-//   EnvironmentSensingSetup();
-//   delay(1200);
-//   bootingSplash(true);
-//   delay(1000);
-//   display.clearDisplay();
-//   display.display();
-// }
-
-// void loop() {
-//   struct connectionState wifiStatus = EnsureWIFIIsConnected();
-
-//   if (wifiStatus.isConnected) {
-//     getRFIDUIDAsync(onRFIDReceived);
-//     runEnvironmentSensing();
-//     bottomPanel(wifiStatus.ssid, wifiStatus.ip);
-
-//     // Fetch the forced light status every 3 seconds
-//     unsigned long currentMillis = millis();
-//     if (currentMillis - previousMillisForcedLight >= intervalForcedLight) {
-//       previousMillisForcedLight = currentMillis;
-//       isForcedLightOn = fetchForcedLightStatusOf("Malabe-GH01");
-//     }
-
-//     // Create the automated lighting task if not already created
-//     if (AutomatedLightingTaskHandle == NULL) {
-//       xTaskCreate(runAutomatedLightingTask, "AutomatedLightingTask", 8192, NULL, 1, &AutomatedLightingTaskHandle); // Let FreeRTOS decide the core
-//     }
-//   } else {
-//     reconnectingScreeen();
-
-//     // Delete the automated lighting task if it is created
-//     if (AutomatedLightingTaskHandle != NULL) {
-//       vTaskDelete(AutomatedLightingTaskHandle);
-//       AutomatedLightingTaskHandle = NULL;
-//     }
-//   }
-// }
-
-// void runEnvironmentSensing() {
-//   unsigned long currentMillis = millis();
-//   if (currentMillis - previousMillisEnvironment >= intervalEnvironment) {
-//     previousMillisEnvironment = currentMillis;
-//     Environment limits = fetchEnvironmentLimitsOf("Malabe-GH01");
-//     struct environmentData currentData = ReturnEnvironmentData(limits.temperature, limits.humidity);
-//     showCurrentTempratureAndHumidity(currentData.temperature, currentData.humidity);
-//     // Serial.println("Chat: " + chatWithPlant("Strawberry-01", limits.humidity));
-//     std::map<String, int> moistureData = {{"Strawberry-01", 60}};
-//     setCurrentEnvironmentOf("Malabe-GH01", currentData.temperature, currentData.humidity, moistureData);
-//   }
-// }
-
-// void runAutomatedLightingTask(void *pvParameters) {
-//   for (;;) {
-//     AutomatedLighting(isForcedLightOn);
-//     vTaskDelay(intervalAutomatedLighting / portTICK_PERIOD_MS); // Delay for 100 milliseconds
-//   }
-// }
-
-// void onRFIDReceived(const String &uid) {
-//   validatingUserScreeen();
-//   asyncAuthenticatingUser(uid, "Malabe-GH01", [](const byte &status, const String &userName) {
-//     if (status == 1) {
-//       String message = userName + " entered the greenhouse!";
-//       if (createNewAlert("Malabe-GH01", "security", message.c_str())) {
-//         validStatusUserScreeen(1);
-//         authTone();
-//       } else {
-//         validStatusUserScreeen(4);
-//       }
-//     } else if (status == 2) {
-//       validStatusUserScreeen(2);
-//       notAuthTone();
-//     } else if (status == 3) {
-//       validStatusUserScreeen(3);
-//       notAuthTone();
-//     } else {
-//       validStatusUserScreeen(4);
-//       notAuthTone();
-//     }
-//   });
-// }
+}

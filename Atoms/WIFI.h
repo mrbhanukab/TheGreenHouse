@@ -1,18 +1,6 @@
 #include <WiFi.h>
 #include <WiFiMulti.h>
 
-#define NUM_NETWORKS 1
-
-struct WiFiCredentials
-{
-    const char *ssid;
-    const char *password;
-};
-
-WiFiCredentials wifiNetworks[NUM_NETWORKS] = {
-    {"mrbhanuka.hotspot", "hotspot@0987654321"},
-};
-
 WiFiMulti wifiMulti;
 
 const uint32_t connectTimeoutMs = 30000;

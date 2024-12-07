@@ -171,8 +171,7 @@ void bottomPanel(String ssid, String ip, bool connection) {
 
   if (currentMillis - previousMillis >= 3000) {
     previousMillis = currentMillis;
-    switch (show) {int previousTemperature = 0;
-int previousHumidity = 0;
+    switch (show) {
       case 1:
         show = 2;
         break;
