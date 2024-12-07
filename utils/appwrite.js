@@ -28,6 +28,13 @@ const database = {
         });
     },
 
+    getDocument: async (databaseID, collectionId, documentId) => {
+        return await databases.getDocument(databaseID, collectionId, documentId);
+    },
+
+    createDocument: async (databaseID, collectionId, documentID, data) => {
+        return await databases.createDocument(databaseID, collectionId, documentID, data);
+    },
 }
 
 module.exports = {database};

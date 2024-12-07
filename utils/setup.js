@@ -13,6 +13,7 @@ const waitForMessage = async (ws) => {
 
                 // Parse the received message into an object
                 const received = parseTextToObject(message);
+                console.log(message);
 
                 // Fetch the database list
                 const databaseList = await database.listDatabases([Query.equal("name", received.company)]);
@@ -42,6 +43,7 @@ const waitForMessage = async (ws) => {
                 // Check if the greenhouse exists
                 if (greenHousesList.total === 0) throw new Error("Greenhouse not found");
 
+                console.log(greenHousesList.documents[0]);
                 // Fetch the plants documents
                 const plants = await database.listDocuments(
                     databaseList.databases[0]["$id"],
@@ -49,15 +51,18 @@ const waitForMessage = async (ws) => {
                     [Query.equal("greenHouse", greenHousesList.documents[0]["$id"])]
                 );
 
-                // Create a string of plant key-value pairs
-                const plantKeyValuePairs = plants.total > 0
-                    ? plants.documents.map(
-                        (plant) => `${plant.name}:moisturePin=${plant.moistureSensor},pumpPin=${plant.pump}`
-                    ).join(";")
-                    : "0";
+                // // Create a string of plant key-value pairs
+                // const plantKeyValuePairs = plants.total > 0
+                //     ? plants.documents.map(
+                //         (plant) => `${plant.name}:moisturePin=${plant.moistureSensor},pumpPin=${plant.pump}`
+                //     ).join(";")
+                //     : "0";
+                //
+                // // Send the plant key-value pairs to the WebSocket client
+                // ws.send(plantKeyValuePairs);
 
-                // Send the plant key-value pairs to the WebSocket client
-                ws.send(plantKeyValuePairs);
+                //send current limits
+                ws.send("limits/temperatureLimit=" + greenHousesList.documents[0].temperatureLimit + ";humidityLimit=" + greenHousesList.documents[0].humidityLimit);
 
                 // Resolve the promise with the database and greenhouse information
                 resolve({

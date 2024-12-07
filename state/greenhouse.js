@@ -22,7 +22,8 @@ const greenHouseState = {
 
         // Send the changes to the WebSocket client if there are any
         if (changes.length > 0) {
-            ws.send(changes.join(';'));
+            console.log("Changes detected: ", changes);
+            ws.send("limits/",changes.join(';'));
         }
     },
 
