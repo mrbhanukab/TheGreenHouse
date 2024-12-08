@@ -62,7 +62,7 @@ const waitForMessage = async (ws) => {
                 // ws.send(plantKeyValuePairs);
 
                 //send current limits
-                ws.send("limits/temperatureLimit=" + greenHousesList.documents[0].temperatureLimit + ";humidityLimit=" + greenHousesList.documents[0].humidityLimit);
+                ws.send("env/temperatureLimit=" + greenHousesList.documents[0].temperatureLimit + ";humidityLimit=" + greenHousesList.documents[0].humidityLimit+";forcedLight="+greenHousesList.documents[0].forcedLight);
 
                 // Resolve the promise with the database and greenhouse information
                 resolve({
