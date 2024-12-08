@@ -14,11 +14,11 @@ void setupIO(){
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(SOIL_MOISTURE_PIN, INPUT);
   pinMode(AUTH_LIGHT_PIN, OUTPUT);
-  pinMode(LED, OUTPUT);
   pinMode(PIR, INPUT);
   pinMode(LDR, INPUT);
   pinMode(HEATER, OUTPUT);
   pinMode(COOLER, OUTPUT);
   pinMode(FAN, OUTPUT);
   pinMode(PUMP, OUTPUT);
+  ledcAttach(LED, 500, 13);
 }

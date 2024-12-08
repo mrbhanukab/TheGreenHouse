@@ -1,5 +1,14 @@
+int threshold = 1000;     // Brightness threshold
+
 void lightON(){
-    Serial.println(forcedLight);
-    if(forcedLight) digitalWrite(LED_BUILTIN, HIGH);
-    else digitalWrite(LED_BUILTIN, LOW);
+    if(forcedLight) ledcWrite(LED, 8191);
+    else {
+        int brightness = analogRead(LDR);
+        if(brightness > threshold){
+             byte motionState = digitalRead(PIR);
+              if (motionState == HIGH) ledcWrite(LED, 8191);
+              else ledcWrite(LED, 2047);
+        }
+        else ledcWrite(LED, 0);
+     }
 }
