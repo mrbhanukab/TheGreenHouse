@@ -57,6 +57,7 @@ void loop() {
       previousMillisDHT = currentMillis;
       readPlant();
       lightON();
+      readPlant()
       checkAndSendDHTData();
     }
 

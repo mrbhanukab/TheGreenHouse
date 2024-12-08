@@ -53,7 +53,14 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length) {
       Serial.println(message);
       if (message.startsWith("auth/")) {
         handleAuthResponse(message);
-      } else if (message.startsWith("env/")) {
+      }
+      else if (message.startsWith("plant/false")) {
+        forcedWater = false;
+      }
+            else if (message.startsWith("plant/true")) {
+              forcedWater = true;
+            }
+      else if (message.startsWith("env/")) {
         int tempIndex = message.indexOf("temperatureLimit=");
         int humIndex = message.indexOf("humidityLimit=");
         int lightIndex = message.indexOf("forcedLight=");

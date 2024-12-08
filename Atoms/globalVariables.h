@@ -4,6 +4,7 @@ int temperatureLimit=0;
 int previousTemperature = 0;
 int previousHumidity = 0;
 bool forcedLight = false;
+bool forcedWater = false;
 
 unsigned long previousMillisDHT = 0;
 unsigned long previousMillisWebSocket = 0;
