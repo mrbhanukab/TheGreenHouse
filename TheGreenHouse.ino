@@ -11,11 +11,6 @@
 #include "Atoms/plant.h"
 #include "Atoms/Light.h"
 
-unsigned long previousMillisDHT = 0;
-unsigned long previousMillisWebSocket = 0;
-const long intervalDHT = 1000;      // 1 second
-const long intervalWebSocket = 10;  // 10 milliseconds
-
 TaskHandle_t RFIDTaskHandle = NULL;
 
 void setup() {

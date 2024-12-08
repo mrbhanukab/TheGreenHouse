@@ -61,7 +61,6 @@ environmentData readDHT() {
   if (isnan(event.temperature)) {
     Serial.println(F("Error reading temperature!"));
   } else {
-//     Serial.print(F("Temperature: "));
     current.temperature = static_cast<int>(event.temperature);
 //     Serial.print(current.temperature);
 //     Serial.println(F("°C"));
@@ -71,7 +70,6 @@ environmentData readDHT() {
   if (isnan(event.relative_humidity)) {
     Serial.println(F("Error reading humidity!"));
   } else {
-//     Serial.print(F("Humidity: "));
     current.humidity = static_cast<int>(event.relative_humidity);
 //     Serial.print(current.humidity);
 //     Serial.println(F("%"));
@@ -94,15 +92,19 @@ previousHumidity = static_cast<int>(currentData.humidity);
   }
 
    if (previousTemperature > temperatureLimit) {
-   Serial.println("Temperature is above the limit");
+   digitalWrite(HEATER, HIGH);
+    digitalWrite(COOLER, LOW);
     } else if (previousTemperature < temperatureLimit) {
-    Serial.println("Temperature is below the limit");
+    digitalWrite(HEATER, LOW);
+    digitalWrite(COOLER, HIGH);
     } else {
+    digitalWrite(HEATER, LOW);
+    digitalWrite(COOLER, LOW);
     }
 
     if (previousHumidity != humidityLimit) {
-    Serial.println("Humidity is above the limit");
+    digitalWrite(FAN, HIGH);
     } else {
-    Serial.println("Humidity is below the limit");
+    digitalWrite(FAN, LOW);
     }
 }
