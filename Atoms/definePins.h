@@ -6,6 +6,6 @@
 void setupIO(){
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(AUTH_LIGHT_PIN, OUTPUT);
-
+  pinMode(LED_BUILTIN, OUTPUT);
   pinMode(SOIL_MOISTURE_PIN, INPUT);
 }

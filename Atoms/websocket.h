@@ -50,11 +50,13 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length) {
     case WStype_TEXT:
       Serial.printf("[WSc] get text: %s\n", payload);
       message = String((char *)payload);
+      Serial.println(message);
       if (message.startsWith("auth/")) {
         handleAuthResponse(message);
-      } else if (message.startsWith("limits/")) {
+      } else if (message.startsWith("env/")) {
         int tempIndex = message.indexOf("temperatureLimit=");
         int humIndex = message.indexOf("humidityLimit=");
+        int lightIndex = message.indexOf("forcedLight=");
         if (tempIndex != -1) {
           int endIndex = message.indexOf(';', tempIndex);
           if (endIndex == -1) endIndex = message.length();
@@ -64,6 +66,12 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length) {
           int endIndex = message.indexOf(';', humIndex);
           if (endIndex == -1) endIndex = message.length();
           humidityLimit = message.substring(humIndex + 14, endIndex).toInt();
+        }
+        if (lightIndex != -1) {
+          int endIndex = message.indexOf(';', lightIndex);
+          if (endIndex == -1) endIndex = message.length();
+          String lightValue = message.substring(lightIndex + 12, endIndex);
+          forcedLight = (lightValue == "true");
         }
         Serial.printf("Updated limits: temperatureLimit=%d, humidityLimit=%d\n", temperatureLimit, humidityLimit);
       }

@@ -9,6 +9,7 @@
 #include "Atoms/RFID.h"
 #include "Atoms/DHTsense.h"
 #include "Atoms/plant.h"
+#include "Atoms/Light.h"
 
 unsigned long previousMillisDHT = 0;
 unsigned long previousMillisWebSocket = 0;
@@ -60,6 +61,7 @@ void loop() {
     if (currentMillis - previousMillisDHT >= intervalDHT) {
       previousMillisDHT = currentMillis;
       readPlant();
+      lightON();
       checkAndSendDHTData();
     }
 
