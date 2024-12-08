@@ -1,6 +1,17 @@
 # This is a generated file; do not edit or check into version control.
+device_info_plus=/home/mrbhanuka/.pub-cache/hosted/pub.dev/device_info_plus-10.1.2/
+flutter_web_auth_2=/home/mrbhanuka/.pub-cache/hosted/pub.dev/flutter_web_auth_2-3.1.2/
+package_info_plus=/home/mrbhanuka/.pub-cache/hosted/pub.dev/package_info_plus-8.1.1/
 path_provider=/home/mrbhanuka/.pub-cache/hosted/pub.dev/path_provider-2.1.5/
 path_provider_android=/home/mrbhanuka/.pub-cache/hosted/pub.dev/path_provider_android-2.2.14/
 path_provider_foundation=/home/mrbhanuka/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.1/
 path_provider_linux=/home/mrbhanuka/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/
 path_provider_windows=/home/mrbhanuka/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/
+url_launcher=/home/mrbhanuka/.pub-cache/hosted/pub.dev/url_launcher-6.3.1/
+url_launcher_android=/home/mrbhanuka/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.14/
+url_launcher_ios=/home/mrbhanuka/.pub-cache/hosted/pub.dev/url_launcher_ios-6.3.2/
+url_launcher_linux=/home/mrbhanuka/.pub-cache/hosted/pub.dev/url_launcher_linux-3.2.1/
+url_launcher_macos=/home/mrbhanuka/.pub-cache/hosted/pub.dev/url_launcher_macos-3.2.2/
+url_launcher_web=/home/mrbhanuka/.pub-cache/hosted/pub.dev/url_launcher_web-2.3.3/
+url_launcher_windows=/home/mrbhanuka/.pub-cache/hosted/pub.dev/url_launcher_windows-3.1.3/
+window_to_front=/home/mrbhanuka/.pub-cache/hosted/pub.dev/window_to_front-0.0.3/

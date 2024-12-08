@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_floating_bottom_bar/flutter_floating_bottom_bar.dart';
 import 'package:thegreenhouse/Components/navbar.dart';
+import 'package:thegreenhouse/Screens/Pages/dashboard.dart';
+import 'package:thegreenhouse/Screens/Pages/hidden.dart';
+import 'package:thegreenhouse/Screens/Pages/notifications.dart';
+import 'package:thegreenhouse/Screens/Pages/reports.dart';
+import 'package:thegreenhouse/Screens/Pages/settings.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -44,11 +49,15 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         width: double.infinity,
         child: Navbar(tabController: tabController),
         body:
-            (context, controller) => Center(
-              child: Text(
-                "Testing BottomBar",
-                style: TextStyle(color: Colors.white, fontSize: 24),
-              ),
+            (context, controller) => TabBarView(
+              controller: tabController,
+              children: [
+                Dashboard(),
+                Notifications(),
+                Hidden(),
+                Reports(),
+                Settings(),
+              ],
             ),
       ),
     );

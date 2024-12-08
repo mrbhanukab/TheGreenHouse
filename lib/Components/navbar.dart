@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:thegreenhouse/Screens/Pages/ai.dart';
 
 class Navbar extends StatelessWidget {
   final TabController tabController;
@@ -19,43 +20,44 @@ class Navbar extends StatelessWidget {
             borderSide: BorderSide(width: 4),
             insets: EdgeInsets.fromLTRB(16, 0, 16, 8),
           ),
+          labelColor: Color(0xFFA9B8EE),
+          unselectedLabelColor: Color(0xFFEEEEE6),
           tabs: [
             SizedBox(
               height: 55,
               width: 40,
-              child: Center(child: Icon(Icons.home, color: Color(0xFFEEEEE6))),
+              child: Center(child: Icon(Icons.home)),
             ),
             SizedBox(
               height: 55,
               width: 40,
-              child: Center(
-                child: Icon(Icons.notifications, color: Color(0xFFEEEEE6)),
-              ),
+              child: Center(child: Icon(Icons.notifications)),
             ),
             SizedBox(height: 55, width: 40),
             SizedBox(
               height: 55,
               width: 40,
-              child: Center(
-                child: Icon(Icons.file_open, color: Color(0xFFEEEEE6)),
-              ),
+              child: Center(child: Icon(Icons.file_open)),
             ),
             SizedBox(
               height: 55,
               width: 40,
-              child: Center(
-                child: Icon(Icons.settings, color: Color(0xFFEEEEE6)),
-              ),
+              child: Center(child: Icon(Icons.settings)),
             ),
           ],
         ),
         Positioned(
-          width: 70,
-          height: 70,
-          top: -25,
+          width: 75,
+          height: 75,
+          top: -35,
           child: FloatingActionButton(
             backgroundColor: Color(0xFFE6D2C4),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AI()),
+              );
+            },
             shape: CircleBorder(),
             child: Lottie.asset(
               "assets/AI/Hi.json",
