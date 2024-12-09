@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:lottie/lottie.dart';
 
@@ -47,7 +46,7 @@ class AIChatScreenState extends State<AIChatScreen> {
 
   Future<void> _initializeModel() async {
     try {
-      var apiKey = dotenv.env['apiKey'];
+      var apiKey = 'AIzaSyCCCeJL3cvG0OOhbVeyjdd2m2hOerCR1jQ';
       if (apiKey != null) {
         _model = GenerativeModel(
           model: 'gemini-1.5-pro',
