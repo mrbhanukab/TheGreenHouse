@@ -5,9 +5,9 @@ void readPlant() {
 // //   Serial.println(moisture);
 if (forcedWater) {
     Serial.println("Watering plant");
-    digitalWrite(WATER_PUMP, HIGH);
+    digitalWrite(PUMP, HIGH);
     delay(5000);
-    digitalWrite(WATER_PUMP, LOW);
+    digitalWrite(PUMP, LOW);
     forcedWater = false;
     sendWebSocketMessage("plant/false");
 }

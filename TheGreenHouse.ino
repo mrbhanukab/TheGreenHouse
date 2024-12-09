@@ -8,7 +8,7 @@
 #include "Atoms/websocket.h"
 #include "Atoms/RFID.h"
 #include "Atoms/DHTsense.h"
-#include "Atoms/plant.h"
+// #include "Atoms/plant.h"
 #include "Atoms/Light.h"
 
 TaskHandle_t RFIDTaskHandle = NULL;
@@ -55,9 +55,7 @@ void loop() {
 
     if (currentMillis - previousMillisDHT >= intervalDHT) {
       previousMillisDHT = currentMillis;
-      readPlant();
       lightON();
-      readPlant()
       checkAndSendDHTData();
     }
 

@@ -78,7 +78,7 @@ void webSocketEvent(WStype_t type, uint8_t *payload, size_t length) {
           int endIndex = message.indexOf(';', lightIndex);
           if (endIndex == -1) endIndex = message.length();
           String lightValue = message.substring(lightIndex + 12, endIndex);
-          forcedLight = (lightValue == "true");
+          forcedLight = (lightValue == "true" ? true : false);
         }
         Serial.printf("Updated limits: temperatureLimit=%d, humidityLimit=%d\n", temperatureLimit, humidityLimit);
       }
