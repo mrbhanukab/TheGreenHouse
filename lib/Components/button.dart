@@ -12,7 +12,7 @@ class Button extends StatelessWidget {
       onPressed: onPressed,
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(Color(0xFF040415)),
-        minimumSize: WidgetStateProperty.all(Size(double.infinity, 55)),
+        minimumSize: WidgetStateProperty.all(Size(55, 55)),
         mouseCursor: WidgetStateProperty.all(SystemMouseCursors.click),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

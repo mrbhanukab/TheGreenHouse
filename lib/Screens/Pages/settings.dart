@@ -9,7 +9,7 @@ class Settings extends StatelessWidget {
       appBar: AppBar(title: Text('Settings')),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Text("data"),
+        child: Text("Coming Soon!"),
       ),
     );
   }

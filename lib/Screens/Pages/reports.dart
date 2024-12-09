@@ -32,19 +32,22 @@ class Reports extends StatelessWidget {
                         letterSpacing: 0.20,
                       ),
                     ),
-                    Button(
-                      text: 'Force Request',
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            backgroundColor: Color(0xFFC0C8E3),
-                            content: Text(
-                              'User ID copied to clipboard!',
-                              style: TextStyle(color: Color(0xFF040415)),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Button(
+                        text: 'Force Request',
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              backgroundColor: Color(0xFFC0C8E3),
+                              content: Text(
+                                'User ID copied to clipboard!',
+                                style: TextStyle(color: Color(0xFF040415)),
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

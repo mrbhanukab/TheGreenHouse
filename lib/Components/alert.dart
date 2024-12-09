@@ -6,21 +6,32 @@ class Alert extends StatelessWidget {
   final TYPE type;
   final String title;
   final String msg;
+  final String dateTime;
 
-  const Alert({super.key, required this.type, this.title = '', this.msg = ''});
+  const Alert({
+    super.key,
+    required this.type,
+    this.title = '',
+    this.msg = '',
+    required this.dateTime,
+  });
 
   @override
   Widget build(BuildContext context) {
     Color backgroundColor;
+    IconData icon;
     switch (type) {
       case TYPE.urgent:
         backgroundColor = Colors.red;
+        icon = Icons.crisis_alert;
         break;
       case TYPE.error:
         backgroundColor = Colors.yellow;
+        icon = Icons.error;
         break;
       case TYPE.alert:
         backgroundColor = Colors.green;
+        icon = Icons.notifications;
         break;
     }
 
@@ -34,7 +45,7 @@ class Alert extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Icon(Icons.crisis_alert, size: 65),
+          Icon(icon, size: 65),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -55,7 +66,7 @@ class Alert extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  '24 Dec | 12:00 PM',
+                  dateTime,
                   style: TextStyle(fontWeight: FontWeight.w700, fontSize: 10),
                 ),
               ],
