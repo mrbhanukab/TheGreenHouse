@@ -12,7 +12,7 @@ Our project, **The Greenhouse**, is a cool, state-of-the-art system we built to 
 ---
 
 # ⚠️
-The project has been discontinued and publicly archived, but as they say, 'every cloud has a silver lining.' Although this will remain archived, a new derivative of this project is coming soon. It will be especially useful for you as a university student, so stay tuned for a surprise. Also, feel free to use this project for your own use cases.
+The project has been discontinued and publicly archived, but as they say, **'every cloud has a silver lining.'** Although this will remain archived, a new derivative of this project is coming soon. It will be especially useful for you as a university student, **so stay tuned for a surprise.** Also, feel free to use this project for your own use cases.
 
 ---
 
