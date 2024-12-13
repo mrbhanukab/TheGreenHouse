@@ -66,6 +66,7 @@ Honestly, this stage was a headache! Our project was much more complicated than 
 Good news! We were selected as top finalists, and we got the opportunity to showcase our skills to the management of the Faculty of Computing. They were amazed by our project, especially because we are in our first year, first semester.
 
 <img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/topList.jpeg" />
+
 ---
 
 ## Features
