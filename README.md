@@ -11,6 +11,11 @@ Our project, **The Greenhouse**, is a cool, state-of-the-art system we built to 
 
 ---
 
+# ⚠️
+The project has been discontinued and publicly archived, but as they say, 'every cloud has a silver lining.' Although this will remain archived, a new derivative of this project is coming soon. It will be especially useful for you as a university student, so stay tuned for a surprise. Also, feel free to use this project for your own use cases.
+
+---
+
 ## Our Team
 <table>
 <tr>
@@ -57,6 +62,10 @@ Honestly, this stage was a headache! Our project was much more complicated than 
 </tr>
 </table>
 
+### Top List
+Good news! We were selected as top finalists, and we got the opportunity to showcase our skills to the management of the Faculty of Computing. They were amazed by our project, especially because we are in our first year, first semester.
+
+<img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/topList.jpeg" />
 ---
 
 ## Features
