@@ -43,11 +43,13 @@ Honestly, this stage was a headache! Our project was much more complicated than 
 </tr>
 </table>
 
+#### Stress Caught in 4k 🤧
+![Caught Stress in 4k 🤧](/ReadMe-Files/Stress.png)
+
 ### Top List
 Good news! We were selected as top finalists, and we got the opportunity to showcase our skills to the management of the Faculty of Computing. They were amazed by our project, especially because we are in our first year, first semester.
 
 <img src="/ReadMe-Files/topList.jpeg" />
-
 ---
 
 ## Features
