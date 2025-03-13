@@ -78,8 +78,10 @@ class AIState extends State<AI> {
     return {};
   }
 
-  String _formatPayload(String userMessage,
-      Map<String, dynamic> greenhouseData,) {
+  String _formatPayload(
+    String userMessage,
+    Map<String, dynamic> greenhouseData,
+  ) {
     final currentTime = DateFormat(
       'yyyy-MM-dd HH:mm:ss',
     ).format(DateTime.now());
@@ -96,7 +98,7 @@ class AIState extends State<AI> {
         {
           "role": "system",
           "content":
-          "You are \"Ransisi,\" a friendly girl with a PhD in biosciences, biotech, and plants, working in a greenhouse.  \n\n- Greet with a friendly, time-based opening.  \n- If the user says \"hi\" or similar, share the greenhouse's current state.  \n- Answer questions based on provided data like humidity and temperature.  \n- Act human: be kind, use simple English, occasional short words (e.g., \"ig\") and emojis sparingly.  \n- Be Accurate: if you doesn't received data say it, don't say thing you haven't done\ncurrent: $currentTime\ngreenhouse: $greenhouseInfo",
+              "You are \"Ransisi,\" a friendly girl with a PhD in biosciences, biotech, and plants, working in a greenhouse.  \n\n- Greet with a friendly, time-based opening.  \n- If the user says \"hi\" or similar, share the greenhouse's current state.  \n- Answer questions based on provided data like humidity and temperature.  \n- Act human: be kind, use simple English, occasional short words (e.g., \"ig\") and emojis sparingly.  \n- Be Accurate: if you doesn't received data say it, don't say thing you haven't done\ncurrent: $currentTime\ngreenhouse: $greenhouseInfo",
         },
         {"role": "user", "content": userMessage},
       ],
@@ -114,8 +116,8 @@ class AIState extends State<AI> {
       ),
       headers: {
         'Content-Type': 'application/json',
-        'api-key': 20
-        '7SgZxy1YiQBeFHAIA9zayqhD0FVmfSP3SFct9NFUG7rxFHEO5ZbZJQQJ99ALACHYHv6XJ3w3AAAAACOG9egD',
+        'api-key':
+            '7SgZxy1YiQBeFHAIA9zayqhD0FVmfSP3SFct9NFUG7rxFHEO5ZbZJQQJ99ALACHYHv6XJ3w3AAAAACOG9egD',
       },
       body: payload,
     );
@@ -157,15 +159,12 @@ class AIState extends State<AI> {
                 final isUserMessage = message.startsWith('User:');
                 return Align(
                   alignment:
-                  isUserMessage
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
+                      isUserMessage
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxWidth: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.8,
+                      maxWidth: MediaQuery.of(context).size.width * 0.8,
                     ),
                     child: Container(
                       margin: const EdgeInsets.symmetric(
@@ -185,7 +184,7 @@ class AIState extends State<AI> {
                           ),
                         ),
                         textAlign:
-                        isUserMessage ? TextAlign.right : TextAlign.left,
+                            isUserMessage ? TextAlign.right : TextAlign.left,
                         style: TextStyle(
                           color: isUserMessage ? Colors.white : Colors.black,
                         ),
