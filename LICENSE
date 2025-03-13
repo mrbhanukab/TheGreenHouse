@@ -1,0 +1,51 @@
+------------------------------  The Limited Open Source License for "theGreenHouse"  ------------------------------
+
+This license governs the use, modification, and distribution of all materials within the "theGreenHouse" project,
+a state-of-the-art greenhouse system developed and maintained by Bhanuka Bandara, Ruvindi Jayasooriya
+Muditha Pasan, Yashara Wanigasekara, Safak Ahamed, and Sandini Imesha. This includes, but is not limited to,
+source code, Arduino code, mobile applications, documentation, and any other files contained within this
+repository.
+
+Open Source with Limitations:-------------------------------------------------------------------------------------
+"theGreenHouse" is released as open-source, but with specific limitations to ensure responsible and ethical use.
+This license grants you the right to access, study, modify, and distribute all materials within this repository.
+
+Commercial Use:---------------------------------------------------------------------------------------------------
+For commercial applications, you are required to modify at least 45% of the original "theGreenHouse" materials.
+This modification ensures that your product is not simply a repackaged version of our work, but rather a distinct
+and original creation. In all commercial applications, you must prominently acknowledge the original contributors
+(Bhanuka Bandara, Ruvindi Jayasooriya, Muditha Pasan, Yashara Wanigasekara, Safak Ahamed, and Sandini Imesha) and
+provide a clear link to the official repository of "theGreenHouse" project.
+
+Non-Academic Private Use:-----------------------------------------------------------------------------------------
+You are free to use "theGreenHouse" materials for private, non-academic purposes without any modifications. This
+includes personal projects, hobbyist endeavors, and internal use within your organization.
+
+Academic Use:-----------------------------------------------------------------------------------------------------
+For academic purposes, including university projects, school assignments, research papers, and educational
+materials (such as YouTube videos, books, or online courses), you are required to modify at least 25% of the
+"theGreenHouse" materials. This modification ensures that your academic work demonstrates your understanding
+and application of the concepts presented in "theGreenHouse," rather than simply relying on our pre-built
+olution. In all academic applications, you must clearly acknowledge the "theGreenHouse" project by providing a
+link to the official repository.
+
+Inspiration and Derivative Works:----------------------------------------------------------------------------------
+We encourage you to be inspired by "theGreenHouse" and develop your own innovative projects based on its
+concepts. While you are free to build upon our ideas, please remember that the original concept and design
+belong to the listed contributors. It is considered good practice to acknowledge the inspiration you drew
+from "theGreenHouse" in your own work.
+
+Liability:----------------------------------------------------------------------------------------------------------
+The original authors of "theGreenHouse" are not liable for any damages, losses, or liabilities arising from the use,
+modification, or distribution of the materials. You are solely responsible for ensuring that your use of
+"theGreenHouse" complies with all applicable laws and regulations.
+
+Encouraging Active Development:-------------------------------------------------------------------------------------
+We strongly encourage users to contribute to the development of "theGreenHouse" by creating forks of the repository
+and submitting pull requests with their improvements and modifications. We believe in fostering a collaborative and
+active community around this project.
+
+Prohibition on AI Training:-----------------------------------------------------------------------------------------
+Using the "theGreenHouse" materials for training artificial intelligence (AI) models is strictly prohibited.
+
+By using "theGreenHouse" materials, you agree to abide by the terms and conditions outlined in this license.
