@@ -19,7 +19,7 @@ The project has been discontinued and publicly archived, but as they say, **'eve
 ## Our Team
 <table>
 <tr>
-<td><img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/team.png"/></td>
+<td><img src="/"/></td>
 <td>
 <ul>
 <li>Bhanuka Bandara</li>
