@@ -103,9 +103,8 @@ Good news! We were selected as top finalists, and we got the opportunity to show
 
 We had to stop working on this project due to time constraints (university life, you know!), and we’re not maintaining it either. But hey, this is where you come in! There’s still plenty you can add:
 
-- Complete the **individual plant-to-main board communication** feature
-- Integrate **Gemini AI** to fully automate processes with advanced AI
-- Connect with **Siri, Google Assistant, Alexa**, or any other voice assistants
-- Enable AI to make phone calls or allow users to call the AI and ask for updates like a real human
-- Incorporate **drone and camera** technology to provide real-time feeds to the mobile app
-- Honestly, the sky’s the limit – be the next Steve Jobs and take this project to the next level!
+- Complete the **individual plant-to-main board communication** feature.  
+- Integrate AI in a properly usable way, instead of just saying "This contains AI."  
+- Use Redis as the database.  
+- Reduce complexity and optimize.  
+- Honestly, the sky’s the limit — be the next Steve Jobs and take this project to the next level!  
