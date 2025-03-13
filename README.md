@@ -49,7 +49,7 @@ Honestly, this stage was a headache! Our project was much more complicated than 
 ### Top List
 Good news! We were selected as top finalists, and we got the opportunity to showcase our skills to the management of the Faculty of Computing. They were amazed by our project, especially because we are in our first year, first semester.
 
-<img src="/ReadMe-Files/topList.jpeg" />
+<img src="/ReadMe-Files/top10.jpg" />
 ---
 
 ## Features
@@ -74,6 +74,7 @@ Good news! We were selected as top finalists, and we got the opportunity to show
 ---
 
 ## Mobile App Preview
+> This is not a snapshot of the latest design — unfortunately, I didn't take any screenshots of it or release the build. But you can still build it yourself if you want. The previous version (shown below) is mobile-responsive, but the latest version isn't — it's all about looks, you know, like how girls are with their makeup 🫠.
 <table>
  <tr>
   <td> <img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/1.jpeg" /> </td>
