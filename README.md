@@ -50,7 +50,6 @@ Honestly, this stage was a headache! Our project was much more complicated than 
 Good news! We were selected as top finalists, and we got the opportunity to showcase our skills to the management of the Faculty of Computing. They were amazed by our project, especially because we are in our first year, first semester.
 
 <img src="/ReadMe-Files/top10.jpg" />
----
 
 ## Features
 
@@ -71,8 +70,6 @@ Good news! We were selected as top finalists, and we got the opportunity to show
 
 - **Arduino**: Arduino was the backbone of our greenhouse sensor management. It helped us control the various sensors and systems in the greenhouse, like temperature, humidity, and plant watering, ensuring everything worked automatically and efficiently.
 
----
-
 ## Mobile App Preview
 > This is not a snapshot of the latest design — unfortunately, I didn't take any screenshots of it or release the build. But you can still build it yourself if you want. The previous version (shown below) is mobile-responsive, but the latest version isn't — it's all about looks, you know, like how girls are with their makeup 🫠.
 <table>
@@ -85,20 +82,16 @@ Good news! We were selected as top finalists, and we got the opportunity to show
  </tr>
 </table>
 
----
 
 ## Supported Operating Systems for Mobile App
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
 ![iOS](https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=ios&logoColor=white)
-
----
 
 ## Contribution Guidelines + License
 
 > **Contributions are welcome!** <br />
 > This project is licensed under a custom open-source license. Please make sure to review it before submitting pull requests. We created this license to ensure you add **new and creative things!** We encourage you to fork the repo, contribute, and build on our ideas. Together, we can make it even better.
 
----
 
 ## Optimizations & Features You Can Contribute
 
