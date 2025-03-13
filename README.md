@@ -9,42 +9,23 @@ The State-of-the-Art Greenhouse |  The ReadMe.md 📖
 
 Our project, **The Greenhouse**, is a cool, state-of-the-art system we built to manage greenhouses efficiently. Created and maintained by Bhanuka Bandara, Ruvindi Jayasooriya, Muditha Pasan, Yashara Wanigasekara, Safak Ahamed, and Sandini Imesha, this was our **1st Year 1st Semester Group Project** at university. We took it pretty seriously, treating it like a competition. Not only did we create an Arduino-based greenhouse project, but we also developed a pixel-perfect mobile app with cutting-edge AI tech.
 
----
-
-# ⚠️
-The project has been discontinued and publicly archived, but as they say, **'every cloud has a silver lining.'** Although this will remain archived, a new derivative of this project is coming soon. It will be especially useful for you as a university student, **so stay tuned for a surprise.** Also, feel free to use this project for your own use cases.
-
----
-
 ## Our Team
 <table>
 <tr>
-<td><img src="/"/></td>
-<td>
-<ul>
-<li>Bhanuka Bandara</li>
-<li>Ruvindi Jayasooriya</li>
-<li>Muditha Pasan</li>
-<li>Yashara Wanigasekara</li>
-<li>Safak Ahamed</li>
-<li>Sandini Imesha</li>
-</ul>
-</td>
+<td><img src="/ReadMe-Files/team.png"/></td>
 </tr>
 </table>
-
----
 
 ## Timeline
 
 ### Preparing Proposal Presentation
-<img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/Preparing.jpeg"/>
+<img src="/ReadMe-Files/Preparing.jpeg"/>
 
 ### Proposal Presentation
 <table>
 <tr>
 <td>To sum it up, it went perfectly! Even better than we expected. Everyone was listening intently, with big smiles on their faces. The marking lecturers even said, "Compared to final-year projects, superb!" That says it all. 😊</td>
-<td><img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/ProposalPresentation.png"/></td>
+<td><img src="/ReadMe-Files/ProposalPresentation.png"/></td>
 </tr>
 </table>
 
@@ -54,18 +35,18 @@ Honestly, this stage was a headache! Our project was much more complicated than 
 ### Final Exhibition
 <table>
 <tr>
-<td><img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/greenhouse.jpeg"/></td>
+<td><img src="/ReadMe-Files/greenhouse.jpeg"/></td>
 <td>To be honest, the final exhibition didn’t go exactly as we hoped. We managed to finish about 97% of the project because we ran into some time issues. But hey, we still made it through, and that’s a win in our books! 🥳</td>
 </tr>
 <tr>
-<td colspan="2"><img src="https://github.com/mrbhanukab/TheGreenHouse/blob/2c40d16fde9d6785cb452699d527872c768daa9e/Documents/ReadmeContent/Final.jpeg"/></td>
+<td colspan="2"><img src="/ReadMe-Files/Final.jpeg"/></td>
 </tr>
 </table>
 
 ### Top List
 Good news! We were selected as top finalists, and we got the opportunity to showcase our skills to the management of the Faculty of Computing. They were amazed by our project, especially because we are in our first year, first semester.
 
-<img src="https://github.com/mrbhanukab/TheGreenHouse/blob/main/Documents/ReadmeContent/topList.jpeg" />
+<img src="/ReadMe-Files/topList.jpeg" />
 
 ---
 
